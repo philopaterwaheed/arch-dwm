@@ -17,8 +17,8 @@ sudo fc-cache -fv
 Regards
 Mohammed Besar
 
-https://www.youtube.com/c/mmbesar
-https://mastodon.online/mbesar
-https://twitter.com/MMBesar
-https://www.facebook.com/Mohammed.Besar.Page
-https://www.instagram.com/mmbesar
+
+https://bit.ly/35TxicB
+https://bit.ly/35P6fPt
+https://bit.ly/3xQHi2d
+https://bit.ly/3qmvO42
