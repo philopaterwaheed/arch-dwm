@@ -1,4 +1,4 @@
-
+for fonts (){
 
 find . -name '*.zip' -exec sh -c 'unzip -d "${1%.*}" "$1"' _ {} \;
 
@@ -22,3 +22,7 @@ https://bit.ly/35TxicB
 https://bit.ly/35P6fPt
 https://bit.ly/3xQHi2d
 https://bit.ly/3qmvO42
+}
+for background () {
+past setbg.sh in dwm/ 
+}
