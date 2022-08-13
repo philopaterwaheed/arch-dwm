@@ -4,13 +4,13 @@
 ## DISK
 hdd() {
   hdd="$(df -h | awk 'NR==4{print $3, $5}')"
-  echo -e "HDD: $hdd"
+  echo -e ": $hdd"
 }
 
 ## RAM
 mem() {
   mem=`free | awk '/Mem/ {printf "%dM/%dM\n", $3 / 1024.0, $2 / 1024.0 }'`
-  echo -e "$mem"
+  echo -e ":$mem"
 }
 
 ## CPU
@@ -21,20 +21,20 @@ cpu() {
   read cpu a b c idle rest < /proc/stat
   total=$((a+b+c+idle))
   cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
-  echo -e "CPU: $cpu%"
+  echo -e " : $cpu%"
 }
 ##heat
 heat()
 {
 heat=$(sensors | grep -A 0  'Tctl:' |tr -d -c 0-9)
-echo -e  "$((heat/10)) C"
+echo -e  "$((heat/10)) "
 
 
 }
 ## VOLUME
 vol() {
-    vol=`amixer get Master | awk -F'[][]' 'END{ print $4":"$2 }' | sed 's/on://g'`
-    echo -e "VOL: $vol"
+    vol=$(pamixer --get-volume-human)
+    echo -e ": $vol"
 }
 
 SLEEP_SEC=3
@@ -45,6 +45,6 @@ SLEEP_SEC=3
 # So I would love to add more functions to this script but it makes the 
 # echo output too long to display correctly.
 while true; do
-xsetroot -name  "$(heat)|$(cpu)|$(mem)|$(hdd)|$(date) "
+xsetroot -name  "$(heat) | $(cpu)| $(mem) | $(hdd) |  :$(date) | $(vol) "
 	sleep $SLEEP_SEC
 done
