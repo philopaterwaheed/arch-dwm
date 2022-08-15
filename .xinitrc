@@ -1,4 +1,4 @@
-sudo code --user-data-dir="~/.vscode-root"
+sudo code --user-data-dir="~/.vscode-root"&
 exec ~/.fehbg&  
 exec xcompmgr& 
 exec xrdb -merge ~/.Xresources&
