@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 #####philo#####
 neofetch
+alias play=mpg123
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
