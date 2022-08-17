@@ -7,6 +7,8 @@
 #####philo#####
 neofetch
 alias play=mpg123
+alias d="cd ~/dwm"
+alias s=" cd ~/dwm/st"
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
