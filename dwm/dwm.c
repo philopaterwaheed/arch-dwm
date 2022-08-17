@@ -298,6 +298,8 @@ static void xinitvisual();
 static void zoom(const Arg *arg);
 static void xinitvisual();
 static void zoom(const Arg *arg);
+static void togglefullscr(const Arg *arg);
+
 /* variables */
 static const char broken[] = "broken";
 static char stext[256];
@@ -1952,6 +1954,13 @@ togglefloating(const Arg *arg)
 
 	arrange(selmon);
 }
+void
+togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+}
+
 
 void
 toggletag(const Arg *arg)
