@@ -13,6 +13,17 @@ cp fonts-conf/fonts.conf ~/.config/fontconfig
 sudo fc-cache -fv
 
 ------
+   <alias>
+   <family>sans-serif</family>
+   <prefer>
+    <family>Arimo اسم الخط الانجليزي موجود في الملف فمش مهم انقله </family>
+    <family>اسم الخط العربي الي انت عاوزه</family>
+   </prefer>
+  </alias>
+
+  
+
+
 
 Regards
 Mohammed Besar
