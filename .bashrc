@@ -5,13 +5,17 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 #####philo#####
-neofetch
-alias play=mpg123
+pfetch
+alias playm=mpg123
 alias d="cd ~/dwm"
 alias s=" cd ~/dwm/st"
+alias c=" cd ~/Dev/c++/"
+alias record="ffmpeg -video_size 1360x768 -framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast"
+alias play="ffplay"
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
+export PS1="{\A}\[$(tput sgr0)\]"
 ################################################################################
 ##  FUNCTIONS                                                                 ##
 ################################################################################
