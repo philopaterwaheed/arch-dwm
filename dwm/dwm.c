@@ -20,7 +20,7 @@ s *
  *
  * To understand everything else, start reading main().
  */
-
+#include <X11/extensions/shape.h>
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
@@ -1429,8 +1429,8 @@ propertynotify(XEvent *e)
 			break;
 		case XA_WM_HINTS:
 			updatewmhints(c);
-			c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
-			c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
+			//c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
+			//c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
 			drawbars();
 			break;
 		}

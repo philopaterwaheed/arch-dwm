@@ -4,11 +4,12 @@
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 5;        /* gaps between windows */
+static const unsigned int gappx     = 6;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int minwsz    = 20;       /* Minimal heigt of a client for smfact */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
+static const int CORNER_RADIUS = 10;
 static const char *fonts[]          ={"Ubuntu-Arabic_B.ttf:size=10"};
 static const char dmenufont[]       ="Ubuntu-Arabic_B.tt.ttf:size=12";
 static const char col_gray1[]       = "#6b5f60";// tages
@@ -38,7 +39,7 @@ static const Rule rules[] = {
     */ // rules for programs
    /* class      instance    title       tags mask  iscentered    isfloating   monitor */
    { "Gimp",     NULL,       NULL,       0,          0,        1,           -1 },
-   { "St",  NULL,       NULL,       1 << 8,         0,            0,           -1 },
+   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	NULL	},
 };
 
 /* layout(s) */
@@ -110,14 +111,17 @@ static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
 static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
 static const char *vs_code[]= {"code",NULL };
 static const char *s_shot[]= {"flameshot","gui",NULL };
-static const char *vol_up[] = {"pactl" ,"set-sink-volume", "0" , "+5%", NULL};
-static const char *vol_down[] = {"pactl" ,"set-sink-volume", "0" , "-5%", NULL};
-static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "0" , "toggle", NULL}; 
+static const char *vol_up[] = {"pactl" ,"set-sink-volume", "1" , "+5%", NULL};
+static const char *vol_down[] = {"pactl" ,"set-sink-volume", "1" , "-5%", NULL};
+static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "1" , "toggle", NULL}; 
 static Key keys[] = {
    /* modifier                     key        function        argument */
    { MODKEY,                       XK_l,      spawn,          {.v = dmenucmd } },
    { MODKEY,                       XK_t,      spawn,            {.v = termcmd } },
    { ShiftMask,        		   XK_Alt_L,  spawn,      {.v =lay_change} },
+//   { XK_Alt_L,			   ShiftMask, spawn,      {.v =lay_change} },
+//   { ShiftMask,        		   XK_Alt_R,  spawn,      {.v =lay_change} },
+//   { XK_Alt_R, 			   ShiftMask, spawn,      {.v =lay_change} },
    { MODKEY,        		   XK_Print,         spawn,      {.v = s_shot} },
    { MODKEY,                       XK_b,      togglebar,      {0} },
    { MODKEY,                       XK_Left,   focusstack,     {.i = +1 } },
@@ -139,7 +143,7 @@ static Key keys[] = {
    { MODKEY,         		   XK_q,     killclient,     {0} },
    { MODKEY|ShiftMask,             XK_l,      setlayout,      {.v = &layouts[0]} },
    { MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },
-//   { MODKEY|ShiftMask,             XK_m,      setlayout,    {.v = &layouts[2]} },
+   { MODKEY|ShiftMask,             XK_m,      setlayout,    {.v = &layouts[2]} },
    { MODKEY,                       XK_space,  setlayout,      {0} },
    { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
    { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -189,5 +193,3 @@ static Button buttons[] = {
    { ClkClientWin,         MODKEY|ShiftMask, Button1,      movemouse,      {.i = 1} },
    { ClkClientWin,         MODKEY|ShiftMask, Button3,      resizemouse,    {.i = 1} },
 };
-
-
