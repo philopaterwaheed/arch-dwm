@@ -10,6 +10,7 @@ alias playm=mpg123
 alias d="cd ~/dwm"
 alias s=" cd ~/dwm/st"
 alias c=" cd ~/Dev/c++/"
+alias t=" cd ~/Dev/c++/text_editor/"
 alias record="ffmpeg -video_size 1360x768 -framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast"
 alias play="ffplay"
 #####/philo#####

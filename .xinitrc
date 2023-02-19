@@ -1,5 +1,5 @@
 
-xrandr --output HDMI-1 --off
+xrandr --output HDMI-1 --auto
 sudo code --user-data-dir="~/.vscode-root"&
 exec ~/.fehbg&
 exec xcompmgr& 
@@ -9,6 +9,7 @@ while true; do
     sleep 4s
 done &
 exec dwm 
+##########
 
 
 
