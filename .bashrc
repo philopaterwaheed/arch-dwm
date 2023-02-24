@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 #####philo#####
 pfetch
+figlet philo san
 alias playm=mpg123
 alias d="cd ~/dwm"
 alias s=" cd ~/dwm/st"
