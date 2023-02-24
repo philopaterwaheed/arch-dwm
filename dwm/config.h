@@ -3,13 +3,17 @@
 /* appearance */
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 6;        /* gaps between windows */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int gappx     = 2;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int minwsz    = 20;       /* Minimal heigt of a client for smfact */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
-static const int CORNER_RADIUS = 10;
+static const unsigned int gappih    = 1;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 1;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 1;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 1;       /* vert outer gap between windows and screen edge */
+static       int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const char *fonts[]          ={"Ubuntu-Arabic_B.ttf:size=10"};
 static const char dmenufont[]       ="Ubuntu-Arabic_B.tt.ttf:size=12";
 static const char col_gray1[]       = "#6b5f60";// tages
@@ -39,7 +43,7 @@ static const Rule rules[] = {
     */ // rules for programs
    /* class      instance    title       tags mask  iscentered    isfloating   monitor */
    { "Gimp",     NULL,       NULL,       0,          0,        1,           -1 },
-   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	NULL	},
+   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	-1	},
 };
 
 /* layout(s) */
@@ -48,11 +52,27 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 static const float smfact     = 0.00; /* factor of tiled clients [0.00..0.95] */
+#define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
+#include "vanitygaps.c"
+
 static const Layout layouts[] = {
    /* symbol     arrange function */
-   { "[]=",      tile },    /* first entry is default */
-   { "><>",      NULL },    /* no layout function means floating behavior */
-   { "[M]",      monocle },
+   { "[]=",      tile },    /* first entry is default */ //0
+   { "[M]",      monocle }, //1 
+	{ "[@]",      spiral }, //2
+	{ "[\\]",     dwindle },//3
+	{ "H[]",      deck },//4 
+	{ "TTT",      bstack },//5
+	{ "===",      bstackhoriz },//6
+	{ "HHH",      grid },//7
+	{ "###",      nrowgrid },//8
+	{ "---",      horizgrid },//9
+	{ ":::",      gaplessgrid },//10
+	{ "|M|",      centeredmaster },//11
+	{ ">M>",      centeredfloatingmaster },//12
+	{ "><>",      NULL },    /* no layout function means floating behavior *///13
+	{ NULL,       NULL },
+	
 };
 void resetlayout (const Arg *arg)
 {
@@ -70,7 +90,7 @@ fullscreen(const Arg *arg)
 {
    if (selmon->showbar) {
       for(last_layout = (Layout *)layouts; last_layout != selmon->lt[selmon->sellt]; last_layout++);
-      setlayout(&((Arg) { .v = &layouts[2] }));
+      setlayout(&((Arg) { .v = &layouts[1] }));
    } else {
       setlayout(&((Arg) { .v = last_layout }));
    }
@@ -119,49 +139,67 @@ static Key keys[] = {
    { MODKEY,                       XK_l,      spawn,          {.v = dmenucmd } },
    { MODKEY,                       XK_t,      spawn,            {.v = termcmd } },
    { ShiftMask,        		   XK_Alt_L,  spawn,      {.v =lay_change} },
-//   { XK_Alt_L,			   ShiftMask, spawn,      {.v =lay_change} },
-//   { ShiftMask,        		   XK_Alt_R,  spawn,      {.v =lay_change} },
-//   { XK_Alt_R, 			   ShiftMask, spawn,      {.v =lay_change} },
    { MODKEY,        		   XK_Print,         spawn,      {.v = s_shot} },
    { MODKEY,                       XK_b,      togglebar,      {0} },
-   { MODKEY,                       XK_Left,   focusstack,     {.i = +1 } },
-   { MODKEY,                       XK_Right,  focusstack,     {.i = -1 } },
-   { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-   { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+   { MODKEY, 			   XK_s		,togglesticky ,      {0} },
+   { MODKEY,                       XK_Left,   focusstack,     {.i = -1 } },
+   { MODKEY,                       XK_Right,  focusstack,     {.i = +1 } },
+   { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },//change to vertical
+   { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },// the same ^^
    { MODKEY|ShiftMask,             XK_Left,      setmfact,       {.f = -0.05} },
    { MODKEY|ShiftMask,             XK_Right,      setmfact,       {.f = +0.05} },
    { MODKEY,                   	   XK_minus,      spawn,      {.v=vol_down} },
    { MODKEY,                       XK_equal,      spawn,      {.v=vol_up} },
-   { MODKEY|ShiftMask,             XK_Up,      setsmfact,      {.f = +0.05} },
+   //{ MODKEY|ShiftMask,             XK_Up,      setsmfact,      {.f = +0.05} },
+  // { MODKEY|ShiftMask,             XK_Up,      moveresizeedge,      {.v = "t" } },
    { MODKEY|ShiftMask,             XK_Down,      setsmfact,      {.f = -0.05} },
    { MODKEY,                  	   XK_Down,      movestack,      {.i = +1 } },
    { MODKEY,                       XK_Up,    movestack,      {.i = -1 } },
    { MODKEY,                   	   XK_m,      spawn,      {.v = vol_mute } },
-   { MODKEY,       	   XK_p,      spawn,      {.v = Monitor_set } },
+   { MODKEY,       	   	   XK_p,      spawn,      {.v = Monitor_set } },
    { MODKEY|ShiftMask,             XK_f,       zoom,           {0} },
    { MODKEY,                       XK_Tab,    view,           {0} },
    { MODKEY,         		   XK_q,     killclient,     {0} },
    { MODKEY|ShiftMask,             XK_l,      setlayout,      {.v = &layouts[0]} },
    { MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },
    { MODKEY|ShiftMask,             XK_m,      setlayout,    {.v = &layouts[2]} },
-   { MODKEY,                       XK_space,  setlayout,      {0} },
-   { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+   { MODKEY,                       XK_space,  setlayout,      {.v = &layouts[0]} },
+   { MODKEY|ShiftMask,             XK_space,  togglefloating, {0}},
    { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
    { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-   { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-   { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-   { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-   { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-//   { MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-//   { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-//   { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
-   { MODKEY,         XK_r,      resetlayout,      {0} },
+   { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },// chane focus of screen 
+   { MODKEY,                       XK_period, focusmon,       {.i = +1 } },// same 
+   { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } }, // moves window to the screen 
+   { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } }, // same 
+   { MODKEY,         XK_r,      resetlayout,      {0} },// resets the sizes 
    { MODKEY,         XK_f,      spawn,      {.v=fire_fox}},
    { MODKEY,         XK_F5,      spawn,      {.v=re_boot}},
    { MODKEY,         XK_Return,  fullscreen,      {0}},
    { MODKEY|ShiftMask,             XK_Return,      togglefullscr,  {0} },
    { MODKEY,         XK_F4,      spawn,      {.v=shut_down}},
-   { MODKEY,         XK_c,        spawn,       {.v=vs_code}}, 
+   { MODKEY,         XK_c,        spawn,       {.v=vs_code}},
+  	
+   	{ MODKEY|Mod1Mask,              XK_b,      setlayout,       {.v = &layouts[5]} },
+   	{ MODKEY|Mod1Mask,              XK_n,      setlayout,       {.v = &layouts[8]} },
+   	{ MODKEY|Mod1Mask,              XK_s,      setlayout,       {.v = &layouts[2]} },
+   	{ MODKEY|Mod1Mask,              XK_g,      setlayout,       {.v = &layouts[7]} },
+   	{ MODKEY|Mod1Mask,              XK_c,      setlayout,       {.v = &layouts[11]} },
+ 	{ MODKEY|Mod1Mask|ShiftMask,    XK_u,      incrgaps,       {.i = -1 } },
+   	{ MODKEY|Mod1Mask,              XK_u,      incrgaps,       {.i = +1 } },
+	{ MODKEY|Mod1Mask,              XK_i,      incrigaps,      {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_i,      incrigaps,      {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_o,      incrogaps,      {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_o,      incrogaps,      {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_6,      incrihgaps,     {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_6,      incrihgaps,     {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_7,      incrivgaps,     {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_7,      incrivgaps,     {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_8,      incrohgaps,     {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_8,      incrohgaps,     {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_9,      incrovgaps,     {.i = +1 } },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_9,      incrovgaps,     {.i = -1 } },
+	{ MODKEY|Mod1Mask,              XK_0,      togglegaps,     {0} },
+	{ MODKEY|Mod1Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
    TAGKEYS(                        XK_1,                      0)
    TAGKEYS(                        XK_2,                      1)
    TAGKEYS(                        XK_3,                      2)
