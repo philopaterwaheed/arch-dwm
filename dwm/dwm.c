@@ -209,6 +209,7 @@ manage(Window w, XWindowAttributes *wa)
 /* function declarations */
 //static void moveresize(const Arg *arg);
 //static void moveresizeedge(const Arg *arg);
+static void tagspawn(const Arg *arg);
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -269,6 +270,7 @@ static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setsticky(Client *c, int sticky);
 //static void setgaps(const Arg *arg);
+static void warp(const Client *c);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
@@ -1044,6 +1046,7 @@ focusmon(const Arg *arg)
 	unfocus(selmon->sel, 0);
 	selmon = m;
 	focus(NULL);
+	warp(selmon->sel);
 }
 
 void
@@ -1633,6 +1636,8 @@ restack(Monitor *m)
 	}
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+	if (m == selmon && (m->tagset[m->seltags] & m->sel->tags) && selmon->lt[selmon->sellt] != &layouts[2])
+				warp(m->sel);
 }
 
 void
@@ -2160,6 +2165,18 @@ unmanage(Client *c, int destroyed)
 	arrange(m);
 }
 
+	
+void
+tagspawn(const Arg *arg)
+	{
+			for (int i=0; i<LENGTH(tags); ++i) {
+				if (selmon->tagset[selmon->seltags] & (1<<i)) {
+					const Arg a = {.v = tagcommands[i]};
+					spawn(&a);
+				}
+			}
+		}
+		
 
 void
 unmapnotify(XEvent *e)
@@ -2456,6 +2473,31 @@ view(const Arg *arg)
 	focus(NULL);
 	arrange(selmon);
 }
+
+	
+void
+warp(const Client *c)
+{
+	int x, y;
+
+	if (!c) {
+		XWarpPointer(dpy, None, root, 0, 0, 0, 0, selmon->wx + selmon->ww/2, selmon->wy + selmon->wh/2);
+		return;
+	}
+
+	if (!getrootptr(&x, &y) ||
+	    (x > c->x - c->bw &&
+	     y > c->y - c->bw &&
+	     x < c->x + c->w + c->bw*2 &&
+	     y < c->y + c->h + c->bw*2) ||
+	    (y > c->mon->by && y < c->mon->by + bh) ||
+	    (c->mon->topbar && !y))
+		return;
+
+	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
+	}
+		
+
 
 Client *
 wintoclient(Window w)

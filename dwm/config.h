@@ -12,10 +12,10 @@ static const int topbar             = 0;        /* 0 means bottom bar */
 static const unsigned int gappih    = 1;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 1;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 1;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 1;       /* vert outer gap between windows and screen edge */
+static const unsigned int gappov    = 2;       /* vert outer gap between windows and screen edge */
 static       int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const char *fonts[]          ={"Ubuntu-Arabic_B.ttf:size=10"};
-static const char dmenufont[]       ="Ubuntu-Arabic_B.tt.ttf:size=12";
+static const char dmenufont[]       =" JetBrainsMono-SemiBoldItalic.ttf:size=12";
 static const char col_gray1[]       = "#6b5f60";// tages
 static const char col_gray2[]       = "#898C8B";
 static const char col_gray3[]       = "#bbbbbb";
@@ -34,6 +34,7 @@ static const unsigned int alphas[][3]      = {
 
 
 /* tagging */
+// aswom sheet cheat ttf-font-awesome
 static const char *tags[] = { "_", "", "", "", ""};
 
 static const Rule rules[] = {
@@ -42,8 +43,8 @@ static const Rule rules[] = {
     *   WM_NAME(STRING) = title
     */ // rules for programs
    /* class      instance    title       tags mask  iscentered    isfloating   monitor */
-   { "Gimp",     NULL,       NULL,       0,          0,        1,           -1 },
-   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	-1	},
+   { "Gimp",     NULL,       NULL,       0,          0,        1,           1 },
+   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	1	},
 };
 
 /* layout(s) */
@@ -134,6 +135,17 @@ static const char *s_shot[]= {"flameshot","gui",NULL };
 static const char *vol_up[] = {"pactl" ,"set-sink-volume", "1" , "+5%", NULL};
 static const char *vol_down[] = {"pactl" ,"set-sink-volume", "1" , "-5%", NULL};
 static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "1" , "toggle", NULL}; 
+
+
+
+/* per tag commands for tagspawn function */
+static const char ** const tagcommands[LENGTH(tags)] = {
+	[0] = termcmd,vs_code, /* first tag */
+	[0] = vs_code,
+};
+
+
+
 static Key keys[] = {
    /* modifier                     key        function        argument */
    { MODKEY,                       XK_l,      spawn,          {.v = dmenucmd } },
@@ -151,7 +163,7 @@ static Key keys[] = {
    { MODKEY,                   	   XK_minus,      spawn,      {.v=vol_down} },
    { MODKEY,                       XK_equal,      spawn,      {.v=vol_up} },
    //{ MODKEY|ShiftMask,             XK_Up,      setsmfact,      {.f = +0.05} },
-  // { MODKEY|ShiftMask,             XK_Up,      moveresizeedge,      {.v = "t" } },
+   { MODKEY|ShiftMask,             XK_Up,      tagspawn,     {0 } },
    { MODKEY|ShiftMask,             XK_Down,      setsmfact,      {.f = -0.05} },
    { MODKEY,                  	   XK_Down,      movestack,      {.i = +1 } },
    { MODKEY,                       XK_Up,    movestack,      {.i = -1 } },
