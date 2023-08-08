@@ -1,0 +1,8 @@
+require "philo.options"
+require "philo.keymaps"
+require "philo.plugins"
+require "philo.cmp"
+require "philo.lsp"
+require "philo.autopairs"
+require "philo.nvim-tree"
+require "philo.toggleterm"
