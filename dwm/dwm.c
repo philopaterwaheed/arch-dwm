@@ -362,88 +362,88 @@ struct Pertag {
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
-/* function implementations */
+ /* function implementations */
 Client *
 cropwintoclient(Window w)
-{
-	Client *c;
-	Monitor *m;
-
-	for (m = mons; m; m = m->next)
-		for (c = m->clients; c; c = c->next)
-			if (c->crop && c->crop->win == w)
-				return c;
-	return NULL;
-}
-
-void
-cropwindow(Client *c)
-{
-	int x, y;
-	XEvent ev;
-	XSetWindowAttributes wa = { .event_mask = SubstructureRedirectMask };
-
-	if (!getrootptr(&x, &y))
-		return;
-	if (!c->crop) {
-		c->crop = ecalloc(1, sizeof(Client));
-		memcpy(c->crop, c, sizeof(Client));
-		c->crop->crop = NULL;
-		c->crop->x = c->crop->y = c->crop->bw = 0;
-		c->basew = c->baseh = c->mina = c->maxa = 0;
-		c->maxw = c->maxh = c->incw = c->inch = 0;
-		c->minw = c->minh = 1;
-		if (!c->isfloating)
-			togglefloating(NULL);
-		c->win = XCreateWindow(dpy, root, x, y, 1, 1, c->bw,
-			0, 0, 0, CWEventMask, &wa);
-		XReparentWindow(dpy, c->crop->win, c->win, 0, 0);
-		XMapWindow(dpy, c->win);
-		focus(c);
-		XCheckTypedWindowEvent(dpy, c->crop->win, UnmapNotify, &ev);
-		if (XCheckTypedWindowEvent(dpy, root, UnmapNotify, &ev)
-		&& ev.xunmap.window != c->crop->win)
-			XPutBackEvent(dpy, &ev);
-	}
-	resizeclient(c->crop, c->crop->x + c->x - x, c->crop->y + c->y - y,
-		     c->crop->w, c->crop->h);
-	resizeclient(c, x, y, 1, 1);
-}
-
-void
-cropdelete(Client *c)
-{
-	Client *crop;
-	XEvent ev;
-
-	c->crop->x += c->x;
-	c->crop->y += c->y;
-	c->crop->bw = c->bw;
-	c->crop->next = c->next;
-	c->crop->snext = c->snext;
-	c->crop->tags = c->tags;
-	c->crop->mon = c->mon;
-	XReparentWindow(dpy, c->crop->win, root, c->crop->x, c->crop->y);
-	XDestroyWindow(dpy, c->win);
-	crop = c->crop;
-	memcpy(c, c->crop, sizeof(Client));
-	free(crop);
-	resize(c, c->x, c->y, c->w, c->h, 0);
-	focus(c);
-	XCheckTypedWindowEvent(dpy, c->win, UnmapNotify, &ev);
-}
-
-void
-cropresize(Client* c)
-{
-	resizeclient(c->crop,
-		     BETWEEN(c->crop->x, -(c->crop->w), 0) ? c->crop->x : 0,
-		     BETWEEN(c->crop->y, -(c->crop->h), 0) ? c->crop->y : 0,
-		     c->crop->w, c->crop->h);
-	resize(c, c->x, c->y,
-	       MIN(c->w, c->crop->x + c->crop->w),
-	       MIN(c->h, c->crop->y + c->crop->h), 0);
-}
+	{
+ 	Client *c;
+ 	Monitor *m;
+ 
+	 	for (m = mons; m; m = m->next)
+	 		for (c = m->clients; c; c = c->next)
+	 			if (c->crop && c->crop->win == w)
+	 				return c;
+ 	return NULL;
+ }
+ 
+ void
+ cropwindow(Client *c)
+	{
+ 	int x, y;
+ 	XEvent ev;
+ 	XSetWindowAttributes wa = { .event_mask = SubstructureRedirectMask };
+ 
+	 	if (!getrootptr(&x, &y))
+	 		return;
+ 	if (!c->crop) {
+	 		c->crop = ecalloc(1, sizeof(Client));
+	 		memcpy(c->crop, c, sizeof(Client));
+	 		c->crop->crop = NULL;
+	 		c->crop->x = c->crop->y = c->crop->bw = 0;
+	 		c->basew = c->baseh = c->mina = c->maxa = 0;
+	 		c->maxw = c->maxh = c->incw = c->inch = 0;
+	 		c->minw = c->minh = 1;
+	 		if (!c->isfloating)
+		 			togglefloating(NULL);
+	 		c->win = XCreateWindow(dpy, root, x, y, 1, 1, c->bw,
+			 			0, 0, 0, CWEventMask, &wa);
+	 		XReparentWindow(dpy, c->crop->win, c->win, 0, 0);
+	 		XMapWindow(dpy, c->win);
+	 		focus(c);
+	 		XCheckTypedWindowEvent(dpy, c->crop->win, UnmapNotify, &ev);
+	 		if (XCheckTypedWindowEvent(dpy, root, UnmapNotify, &ev)
+			 		&& ev.xunmap.window != c->crop->win)
+		 			XPutBackEvent(dpy, &ev);
+	 	}
+ 	resizeclient(c->crop, c->crop->x + c->x - x, c->crop->y + c->y - y,
+		 		     c->crop->w, c->crop->h);
+ 	resizeclient(c, x, y, 1, 1);
+ }
+ 
+ void
+ cropdelete(Client *c)
+	{
+ 	Client *crop;
+ 	XEvent ev;
+ 
+	 	c->crop->x += c->x;
+ 	c->crop->y += c->y;
+ 	c->crop->bw = c->bw;
+ 	c->crop->next = c->next;
+ 	c->crop->snext = c->snext;
+ 	c->crop->tags = c->tags;
+ 	c->crop->mon = c->mon;
+ 	XReparentWindow(dpy, c->crop->win, root, c->crop->x, c->crop->y);
+ 	XDestroyWindow(dpy, c->win);
+ 	crop = c->crop;
+ 	memcpy(c, c->crop, sizeof(Client));
+ 	free(crop);
+ 	resize(c, c->x, c->y, c->w, c->h, 0);
+ 	focus(c);
+ 	XCheckTypedWindowEvent(dpy, c->win, UnmapNotify, &ev);
+ }
+ 
+ void
+ cropresize(Client* c)
+	{
+ 	resizeclient(c->crop,
+		 		     BETWEEN(c->crop->x, -(c->crop->w), 0) ? c->crop->x : 0,
+		 		     BETWEEN(c->crop->y, -(c->crop->h), 0) ? c->crop->y : 0,
+		 		     c->crop->w, c->crop->h);
+ 	resize(c, c->x, c->y,
+		 	       MIN(c->w, c->crop->x + c->crop->w),
+		 	       MIN(c->h, c->crop->y + c->crop->h), 0);
+ }
 
 void
 applyrules(Client *c)
@@ -1371,10 +1371,10 @@ movemouse(const Arg *arg)
 	restack(selmon);
 	ocx = c->x;
 	ocy = c->y;
-	if (arg->i == 1 && c->crop) {
-		ocx = c->crop->x;
-		ocy = c->crop->y;
-	}
+		if (arg->i == 1 && c->crop) {
+				ocx = c->crop->x;
+				ocy = c->crop->y;
+			}
 	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
 		None, cursor[CurMove]->cursor, CurrentTime) != GrabSuccess)
 		return;
@@ -1396,8 +1396,10 @@ movemouse(const Arg *arg)
 			nx = ocx + (ev.xmotion.x - x);
 			ny = ocy + (ev.xmotion.y - y);
 			if (arg->i == 1 && c->crop) {
-			ocx = c->crop->x;
-			ocy = c->crop->y;
+								c->crop->x = nx;
+								c->crop->y = ny;
+								cropresize(c);
+								continue;
 			}
 			if (abs(selmon->wx - nx) < snap)
 				nx = selmon->wx;

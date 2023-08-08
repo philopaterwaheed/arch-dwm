@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-
+//pla pla
 /* appearance */
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
@@ -44,7 +44,6 @@ static const Rule rules[] = {
     */ // rules for programs
    /* class      instance    title       tags mask  iscentered    isfloating   monitor */
    { "Gimp",     NULL,       NULL,       0,          0,        1,           1 },
-   { "St",  NULL,       NULL,       1 << 8,         0,         0, 	1	},
 };
 
 /* layout(s) */
@@ -60,20 +59,20 @@ static const Layout layouts[] = {
    /* symbol     arrange function */
    { "[]=",      tile },    /* first entry is default */ //0
    { "[M]",      monocle }, //1 
-	{ "[@]",      spiral }, //2
-	{ "[\\]",     dwindle },//3
-	{ "H[]",      deck },//4 
-	{ "TTT",      bstack },//5
-	{ "===",      bstackhoriz },//6
-	{ "HHH",      grid },//7
-	{ "###",      nrowgrid },//8
-	{ "---",      horizgrid },//9
-	{ ":::",      gaplessgrid },//10
-	{ "|M|",      centeredmaster },//11
-	{ ">M>",      centeredfloatingmaster },//12
-	{ "><>",      NULL },    /* no layout function means floating behavior *///13
-	{ NULL,       NULL },
-	
+   { "[@]",      spiral }, //2
+   { "[\\]",     dwindle },//3
+   { "H[]",      deck },//4 
+   { "TTT",      bstack },//5
+   { "===",      bstackhoriz },//6
+   { "HHH",      grid },//7
+   { "###",      nrowgrid },//8
+   { "---",      horizgrid },//9
+   { ":::",      gaplessgrid },//10
+   { "|M|",      centeredmaster },//11
+   { ">M>",      centeredfloatingmaster },//12
+   { "><>",      NULL },    /* no layout function means floating behavior *///13
+   { NULL,       NULL },
+   
 };
 void resetlayout (const Arg *arg)
 {
@@ -128,6 +127,7 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *fire_fox[]  = {"firefox",NULL};
 static const char *re_boot[]  = {"reboot",NULL};
 static const char *shut_down[] = {"poweroff",NULL};
+static const char *sl_eep[] = {"sudo","slp",NULL};
 static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
 static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
 static const char *vs_code[]= {"code",NULL };
@@ -140,8 +140,8 @@ static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "1" , "toggle", NULL}
 
 /* per tag commands for tagspawn function */
 static const char ** const tagcommands[LENGTH(tags)] = {
-	[0] = termcmd,vs_code, /* first tag */
-	[0] = vs_code,
+   [0] = termcmd,vs_code, /* first tag */
+   [0] = vs_code,
 };
 
 
@@ -150,28 +150,29 @@ static Key keys[] = {
    /* modifier                     key        function        argument */
    { MODKEY,                       XK_l,      spawn,          {.v = dmenucmd } },
    { MODKEY,                       XK_t,      spawn,            {.v = termcmd } },
-   { ShiftMask,        		   XK_Alt_L,  spawn,      {.v =lay_change} },
-   { MODKEY,        		   XK_Print,         spawn,      {.v = s_shot} },
+   { ShiftMask,                 XK_Alt_L,  spawn,      {.v =lay_change} },
+   { MODKEY,                 XK_Print,         spawn,      {.v = s_shot} },
    { MODKEY,                       XK_b,      togglebar,      {0} },
-   { MODKEY, 			   XK_s		,togglesticky ,      {0} },
+   { MODKEY,             XK_s      ,togglesticky ,      {0} },
    { MODKEY,                       XK_Left,   focusstack,     {.i = -1 } },
    { MODKEY,                       XK_Right,  focusstack,     {.i = +1 } },
    { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },//change to vertical
    { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },// the same ^^
    { MODKEY|ShiftMask,             XK_Left,      setmfact,       {.f = -0.05} },
    { MODKEY|ShiftMask,             XK_Right,      setmfact,       {.f = +0.05} },
-   { MODKEY,                   	   XK_minus,      spawn,      {.v=vol_down} },
+   { MODKEY,                         XK_minus,      spawn,      {.v=vol_down} },
    { MODKEY,                       XK_equal,      spawn,      {.v=vol_up} },
    //{ MODKEY|ShiftMask,             XK_Up,      setsmfact,      {.f = +0.05} },
-   { MODKEY|ShiftMask,             XK_Up,      tagspawn,     {0 } },
+ //
+ //  { MODKEY|ShiftMask,             XK_Up,      tagspawn,     {0 } },
    { MODKEY|ShiftMask,             XK_Down,      setsmfact,      {.f = -0.05} },
-   { MODKEY,                  	   XK_Down,      movestack,      {.i = +1 } },
+   { MODKEY,                        XK_Down,      movestack,      {.i = +1 } },
    { MODKEY,                       XK_Up,    movestack,      {.i = -1 } },
-   { MODKEY,                   	   XK_m,      spawn,      {.v = vol_mute } },
-   { MODKEY,       	   	   XK_p,      spawn,      {.v = Monitor_set } },
+   { MODKEY,                         XK_m,      spawn,      {.v = vol_mute } },
+   { MODKEY,                   XK_p,      spawn,      {.v = Monitor_set } },
    { MODKEY|ShiftMask,             XK_f,       zoom,           {0} },
    { MODKEY,                       XK_Tab,    view,           {0} },
-   { MODKEY,         		   XK_q,     killclient,     {0} },
+   { MODKEY,                  XK_q,     killclient,     {0} },
    { MODKEY|ShiftMask,             XK_l,      setlayout,      {.v = &layouts[0]} },
    { MODKEY|ShiftMask,             XK_e,      setlayout,      {.v = &layouts[1]} },
    { MODKEY|ShiftMask,             XK_m,      setlayout,    {.v = &layouts[2]} },
@@ -189,29 +190,30 @@ static Key keys[] = {
    { MODKEY,         XK_Return,  fullscreen,      {0}},
    { MODKEY|ShiftMask,             XK_Return,      togglefullscr,  {0} },
    { MODKEY,         XK_F4,      spawn,      {.v=shut_down}},
+   { MODKEY,         XK_F6,      spawn,     {.v= sl_eep}},
    { MODKEY,         XK_c,        spawn,       {.v=vs_code}},
-  	
-   	{ MODKEY|Mod1Mask,              XK_b,      setlayout,       {.v = &layouts[5]} },
-   	{ MODKEY|Mod1Mask,              XK_n,      setlayout,       {.v = &layouts[8]} },
-   	{ MODKEY|Mod1Mask,              XK_s,      setlayout,       {.v = &layouts[2]} },
-   	{ MODKEY|Mod1Mask,              XK_g,      setlayout,       {.v = &layouts[7]} },
-   	{ MODKEY|Mod1Mask,              XK_c,      setlayout,       {.v = &layouts[11]} },
- 	{ MODKEY|Mod1Mask|ShiftMask,    XK_u,      incrgaps,       {.i = -1 } },
-   	{ MODKEY|Mod1Mask,              XK_u,      incrgaps,       {.i = +1 } },
-	{ MODKEY|Mod1Mask,              XK_i,      incrigaps,      {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_i,      incrigaps,      {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_o,      incrogaps,      {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_o,      incrogaps,      {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_6,      incrihgaps,     {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_6,      incrihgaps,     {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_7,      incrivgaps,     {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_7,      incrivgaps,     {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_8,      incrohgaps,     {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_8,      incrohgaps,     {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_9,      incrovgaps,     {.i = +1 } },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_9,      incrovgaps,     {.i = -1 } },
-	{ MODKEY|Mod1Mask,              XK_0,      togglegaps,     {0} },
-	{ MODKEY|Mod1Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
+     
+      { MODKEY|Mod1Mask,              XK_b,      setlayout,       {.v = &layouts[5]} },
+      { MODKEY|Mod1Mask,              XK_n,      setlayout,       {.v = &layouts[8]} },
+      { MODKEY|Mod1Mask,              XK_s,      setlayout,       {.v = &layouts[2]} },
+      { MODKEY|Mod1Mask,              XK_g,      setlayout,       {.v = &layouts[7]} },
+      { MODKEY|Mod1Mask,              XK_c,      setlayout,       {.v = &layouts[11]} },
+    { MODKEY|Mod1Mask|ShiftMask,    XK_u,      incrgaps,       {.i = -1 } },
+      { MODKEY|Mod1Mask,              XK_u,      incrgaps,       {.i = +1 } },
+   { MODKEY|Mod1Mask,              XK_i,      incrigaps,      {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_i,      incrigaps,      {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_o,      incrogaps,      {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_o,      incrogaps,      {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_6,      incrihgaps,     {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_6,      incrihgaps,     {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_7,      incrivgaps,     {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_7,      incrivgaps,     {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_8,      incrohgaps,     {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_8,      incrohgaps,     {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_9,      incrovgaps,     {.i = +1 } },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_9,      incrovgaps,     {.i = -1 } },
+   { MODKEY|Mod1Mask,              XK_0,      togglegaps,     {0} },
+   { MODKEY|Mod1Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
    TAGKEYS(                        XK_1,                      0)
    TAGKEYS(                        XK_2,                      1)
    TAGKEYS(                        XK_3,                      2)
@@ -243,3 +245,4 @@ static Button buttons[] = {
    { ClkClientWin,         MODKEY|ShiftMask, Button1,      movemouse,      {.i = 1} },
    { ClkClientWin,         MODKEY|ShiftMask, Button3,      resizemouse,    {.i = 1} },
 };
+
