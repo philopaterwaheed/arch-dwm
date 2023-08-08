@@ -94,7 +94,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 0.88888888444; // change to change alpha
+float alpha = 0.7; // change to change alpha
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
@@ -245,9 +245,6 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
-
 };
 
 /*
@@ -255,8 +252,7 @@ static Shortcut shortcuts[] = {
  *
  * Mask value:
  * * Use XK_ANY_MOD to match the key no matter modifiers state
- * * Use XK_NO_MOD to match the key alone (no modifiers)
- * appkey value:
+ * * Use XK_NO_MOD to match the key alone (no modifierd * appkey value:
  * * 0: no value
  * * > 0: keypad application mode enabled
  * *   = 2: term.numlock = 1
