@@ -50,6 +50,10 @@ return packer.startup(function(use)
   use 'kyazdani42/nvim-tree.lua'
   use "akinsho/toggleterm.nvim"
   use "lukas-reineke/indent-blankline.nvim"
+  use "mbbill/undotree"
+-- Tabline
+  use "akinsho/bufferline.nvim"
+  use "moll/vim-bbye"
  -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin
   use "hrsh7th/cmp-buffer" -- buffer completions
@@ -65,14 +69,12 @@ return packer.startup(function(use)
   use "lunarvim/darkplus.nvim"
   use "navarasu/onedark.nvim"
   use "nvim-lualine/lualine.nvim"
+  use  'Mofiqul/dracula.nvim'
   --
     -- Treesitter
-  use {
-    "nvim-treesitter/nvim-treesitter",
-    run = ":TSUpdate",
-  }
+  use "nvim-treesitter/nvim-treesitter"
   use "p00f/nvim-ts-rainbow"
-  use "nvim-treesitter/playground"
+  --use "nvim-treesitter/playground"
   -- snippets
   use "L3MON4D3/LuaSnip" --snippet engine
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use

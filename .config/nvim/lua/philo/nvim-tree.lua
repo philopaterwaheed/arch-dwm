@@ -29,7 +29,7 @@ nvim_tree.setup {
   reload_on_bufenter = false,
   respect_buf_cwd = false,
   on_attach = "disable",
-  remove_keymaps = false,
+  --remove_keymaps = false,
   select_prompts = false,
   view = {
     centralize_selection = false,
@@ -42,12 +42,12 @@ nvim_tree.setup {
     number = false,
     relativenumber = false,
     signcolumn = "yes",
-    mappings = {
-      custom_only = false,
-      list = {
+    --mappings = {
+      --custom_only = false,
+      --list = {
 	
-      },
-    },
+     -- },
+    --},
     float = {
       enable = false,
       quit_on_focus_loss = true,
@@ -124,7 +124,7 @@ nvim_tree.setup {
   },
   hijack_directories = {
     enable = true,
-    auto_open = true,
+    auto_open = false,
   },
   update_focused_file = {
     enable = true,
