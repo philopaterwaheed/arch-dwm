@@ -7,4 +7,4 @@ vim.opt.hlsearch = false                         -- highlight all matches on pre
 vim.opt.wrap = false                            -- display lines as one long line
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
-
+vim.opt.clipboard=unnamedplus

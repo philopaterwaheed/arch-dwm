@@ -124,7 +124,7 @@ nvim_tree.setup {
   },
   hijack_directories = {
     enable = true,
-    auto_open = false,
+    auto_open = true,
   },
   update_focused_file = {
     enable = true,

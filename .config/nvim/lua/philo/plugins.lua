@@ -51,6 +51,8 @@ return packer.startup(function(use)
   use "akinsho/toggleterm.nvim"
   use "lukas-reineke/indent-blankline.nvim"
   use "mbbill/undotree"
+  use "glepnir/dashboard-nvim"
+
 -- Tabline
   use "akinsho/bufferline.nvim"
   use "moll/vim-bbye"

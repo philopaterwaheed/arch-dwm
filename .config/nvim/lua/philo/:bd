@@ -1,4 +1,4 @@
-vim.g.mapleader = " "
+dadavim.g.mapleader = " "
 local opts = { noremap = true, silent = true }
 
 local term_opts = { silent = true }
@@ -20,7 +20,7 @@ keymap('n', "<leader>n", ':NvimTreeToggle<CR>', {noremap = true, silent = true})
 -- undo tree 
 vim.keymap.set('n', "<leader>u", vim.cmd.UndotreeToggle)
 -- Close tab key mapping in bufferline
-keymap('n', '<leader><Esc>', ':bd<CR>', { noremap = true, silent = true })
+keymap('n', '<leader><Esc>', ':x :bd<CR>', { noremap = true, silent = true })
 -- This function has been generated from your
 --   view.mappings.list
 --   view.mappings.custom_only
