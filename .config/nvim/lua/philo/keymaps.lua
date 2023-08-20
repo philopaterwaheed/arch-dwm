@@ -14,6 +14,9 @@ keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 keymap("n", "<leader>l", ":bnext<CR>", opts)
 keymap("n", "<leader>h", ":bprevious<CR>", opts)
+--: keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
+keymap("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>", opts)
+keymap("n", "<c-t>", "<cmd>Telescope live_grep<cr>", opts)
 -- Toggle nvim-tree
 keymap('n', "<leader>n", ':NvimTreeToggle<CR>', {noremap = true, silent = true})
 --
