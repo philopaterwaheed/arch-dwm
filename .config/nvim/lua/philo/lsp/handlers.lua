@@ -60,13 +60,19 @@ local function lsp_highlight_document(client)
   end
 end
 --server
-require'lspconfig'.clangd.setup{}
+require'lspconfig'.clangd.setup{
+	on_attach = function(client , buffer)
+	client.server_capabilities.signatureHelpProvider = false
+	on_attach(cleant, bufnr)
+	end,
+	capabilities = capabilities,
+}
 require'lspconfig'.pylsp.setup{}
 
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }
   vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+  vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", ":Telescope lsp_defintions", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
