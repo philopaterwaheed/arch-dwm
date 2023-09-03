@@ -1,4 +1,4 @@
-
+xidlehook --not-when-audio --not-when-fullscreen --timer 600 "slock&  systemctl suspend" - &
 xrandr --output HDMI-1 --auto
 sudo code --user-data-dir="~/.vscode-root"&
 exec ~/.fehbg&
