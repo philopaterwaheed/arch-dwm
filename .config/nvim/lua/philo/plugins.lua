@@ -52,7 +52,8 @@ return packer.startup(function(use)
   use "lukas-reineke/indent-blankline.nvim"
   use "mbbill/undotree"
   use "glepnir/dashboard-nvim"
-
+  use "dstein64/vim-startuptime"
+  use "lewis6991/impatient.nvim"
 -- Tabline
   use "akinsho/bufferline.nvim"
   use "moll/vim-bbye"
@@ -72,6 +73,7 @@ return packer.startup(function(use)
   use "navarasu/onedark.nvim"
   use "nvim-lualine/lualine.nvim"
   use  'Mofiqul/dracula.nvim'
+  use 'gbprod/nord.nvim'
   --
     -- Treesitter
   use "nvim-treesitter/nvim-treesitter"

@@ -134,6 +134,11 @@ _G.packer_plugins = {
     path = "/home/philosan/.local/share/nvim/site/pack/packer/start/friendly-snippets",
     url = "https://github.com/rafamadriz/friendly-snippets"
   },
+  ["impatient.nvim"] = {
+    loaded = true,
+    path = "/home/philosan/.local/share/nvim/site/pack/packer/start/impatient.nvim",
+    url = "https://github.com/lewis6991/impatient.nvim"
+  },
   ["indent-blankline.nvim"] = {
     loaded = true,
     path = "/home/philosan/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
@@ -153,6 +158,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/philosan/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
+  },
+  ["nord.nvim"] = {
+    loaded = true,
+    path = "/home/philosan/.local/share/nvim/site/pack/packer/start/nord.nvim",
+    url = "https://github.com/gbprod/nord.nvim"
   },
   ["null-ls.nvim"] = {
     loaded = true,
@@ -248,6 +258,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/philosan/.local/share/nvim/site/pack/packer/start/vim-bbye",
     url = "https://github.com/moll/vim-bbye"
+  },
+  ["vim-startuptime"] = {
+    loaded = true,
+    path = "/home/philosan/.local/share/nvim/site/pack/packer/start/vim-startuptime",
+    url = "https://github.com/dstein64/vim-startuptime"
   }
 }
 

@@ -1,0 +1,10 @@
+.philohead{
+font-size : 0.3em;
+white-space: pre-line;
+color: #432d54 
+}
+body{
+	background-image: url('pics/bd.png');
+	background-size : 100% 100%;
+	background-attachment : fixed; 
+}
