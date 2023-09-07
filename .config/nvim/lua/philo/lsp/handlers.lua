@@ -1,5 +1,5 @@
 local M = {}
-local servers = {'clangd','pylsp'}
+local servers = {'clangd','pylsp','html-lsp','cssls'}
 -- TODO: backfill this to template
 M.setup = function()
   local signs = {
@@ -68,6 +68,8 @@ require'lspconfig'.clangd.setup{
 	capabilities = capabilities,
 }
 require'lspconfig'.pylsp.setup{}
+require'lspconfig'.html.setup{}
+require'lspconfig'.cssls.setup{}
 
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }

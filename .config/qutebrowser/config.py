@@ -206,10 +206,12 @@ c.fonts.default_size = '8pt'
 
 
 # Bindings for normal mode
-config.bind('M', 'hint links spawn mpv {hint-url}')
-config.bind('Z', 'hint links spawn st -e youtube-dl {hint-url}')
+config.bind('M', 'hint links spawn --detach mpv {hint-url}')
+config.bind('pt', 'tab-pin')
+config.bind('Z', 'hint links spawn st -e yt-dlp -P /home/philosan/Videos {hint-url}')
+config.bind('D', 'hint links spawn st wget -P /home/philosan/Downloads {hint-url}')
+config.bind('yf', 'hint links yank')
 config.bind('t', 'set-cmd-text -s :open -t')
 config.bind('xb', 'config-cycle statusbar.show always never')
 config.bind('xt', 'config-cycle tabs.show always never')
 config.bind('xx', 'config-cycle statusbar.show always never;; config-cycle tabs.show always never')
-
