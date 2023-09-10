@@ -74,7 +74,8 @@ require'lspconfig'.cssls.setup{}
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }
   vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", ":Telescope lsp_definitions", opts)
+  --vim.api.nvim_buf_set_keymap( "n", "gd", "<cmd>Telescope lsp_definitions<cr>", opts)
+  vim.api.nvim_buf_set_keymap(0, "n", "<leader>D", "<cmd>Telescope lsp_definitions<cr>", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)

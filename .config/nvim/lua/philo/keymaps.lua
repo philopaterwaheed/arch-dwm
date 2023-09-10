@@ -19,13 +19,17 @@ keymap("n", "<leader>L", "<cmd>vertical resize +5<cr>", opts)
 --: keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
 keymap("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>", opts)
 keymap("n", "<leader>t", "<cmd>Telescope live_grep<cr>", opts)
--- Toggle nvim-tree
+-- Toggle nvim-treevim
 keymap('n', "<leader>n", ':NvimTreeToggle<CR>', {noremap = true, silent = true})
 --
 -- undo tree 
 vim.keymap.set('n', "<leader>u", vim.cmd.UndotreeToggle)
 -- Close tab key mapping in bufferline
 keymap('n', '<leader><Esc>', ':bd<CR>', { noremap = true, silent = true })
+-- telescope functions
+keymap( "n", "gd", ":Telescope lsp_definitions<cr>", opts)
+keymap( "n", "gD", ":lua vim.lsp.buf.declaration()<cr>", opts)
+keymap( "n", "gi", ":lua  vim.lsp.buf.implementation()<cr>", opts)
 -- This function has been generated from your
 --   view.mappings.list
 --   view.mappings.custom_only
