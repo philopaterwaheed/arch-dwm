@@ -1,11 +1,9 @@
 vim.g.mapleader = " "
 local opts = { noremap = true, silent = true }
-
 local term_opts = { silent = true }
 
 -- Shorten function name
 local keymap = vim.api.nvim_set_keymap
-
 -- Normal --
 -- Better window navigation
 keymap("n", "<leader>h", "<C-w>h", opts)
@@ -14,6 +12,10 @@ keymap("n", "<leader>k", "<C-w>k", opts)
 keymap("n", "<leader>l", "<C-w>l", opts)
 keymap("n", "<leader>.", ":bnext<CR>", opts)
 keymap("n", "<leader>,", ":bprevious<CR>", opts)
+keymap("n", "<leader>J", "<cmd>resize +5<cr>", opts)
+keymap("n", "<leader>K", "<cmd>resize -5<cr>", opts)
+keymap("n", "<leader>H", "<cmd>vertical resize -5<cr>", opts)
+keymap("n", "<leader>L", "<cmd>vertical resize +5<cr>", opts)
 --: keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
 keymap("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>", opts)
 keymap("n", "<leader>t", "<cmd>Telescope live_grep<cr>", opts)
