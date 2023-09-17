@@ -30,6 +30,13 @@ keymap('n', '<leader><Esc>', ':bd<CR>', { noremap = true, silent = true })
 keymap( "n", "gd", ":Telescope lsp_definitions<cr>", opts)
 keymap( "n", "gD", ":lua vim.lsp.buf.declaration()<cr>", opts)
 keymap( "n", "gi", ":lua  vim.lsp.buf.implementation()<cr>", opts)
+-- pasting without yanking
+keymap ("x" , "<leader>p", "\"_dP", opts)
+-- navigation
+vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', {noremap = true})
+vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', {noremap = true})
+vim.api.nvim_set_keymap('n', 'n', 'nzzzv', {noremap = true})
+vim.api.nvim_set_keymap('n', 'N', 'Nzzzv', {noremap = true})
 -- This function has been generated from your
 --   view.mappings.list
 --   view.mappings.custom_only

@@ -9,3 +9,5 @@ vim.opt.splitbelow = true                       -- force all horizontal splits t
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
 vim.opt.clipboard = "unnamed"		-- copies to the clipboard -- you should install xclip
 --vim.api.nvim_set_option("clipboard","unnamed") 
+vim.opt.undofile = true
+--vim.opt.signcolumn = 'auto:2'

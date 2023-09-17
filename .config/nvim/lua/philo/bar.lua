@@ -46,3 +46,4 @@ require('lualine').setup {
   extensions = {}
 }
 --options = { theme = 'gruvbox' }
+--

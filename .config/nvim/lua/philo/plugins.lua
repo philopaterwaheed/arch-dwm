@@ -54,6 +54,12 @@ return packer.startup(function(use)
   use "glepnir/dashboard-nvim"
   use "dstein64/vim-startuptime"
   use "lewis6991/impatient.nvim"
+  use "norcalli/nvim-colorizer.lua"
+  use "tpope/vim-fugitive"
+  use {
+    'lewis6991/gitsigns.nvim',
+    requires = { 'nvim-lua/plenary.nvim' }
+	}
 -- Tabline
   use "akinsho/bufferline.nvim"
   use "moll/vim-bbye"
