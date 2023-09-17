@@ -3,5 +3,5 @@
 #
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
-startx
+[[ ! $DISPLAY && $(tty) = "/dev/tty1" ]] && startx
 

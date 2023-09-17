@@ -13,14 +13,18 @@ alias d="cd ~/dwm"
 alias s=" cd ~/dwm/st"
 alias c=" cd ~/Dev/c++/"
 alias t=" cd ~/Dev/c++/text_editor/"
+alias n=" cd ~/.config/nvim/lua/philo/"
 alias record="ffmpeg -video_size 1360x768 -framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast"
 alias play="ffplay"
-alias vim="nvim"
+alias vi="nvim"
+alias :x="exit"
+alias r="ranger"
 alias slp="systemctl suspend"
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 export PS1="{\A}\[$(tput sgr0)\]"
+set -o vi
 ################################################################################
 ##  FUNCTIONS                                                                 ##
 ################################################################################
