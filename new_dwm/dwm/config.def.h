@@ -6,22 +6,22 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 1;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 1;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 1;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 2;       /* vert outer gap between windows and screen edge */
+static const unsigned int gappov    = 1;       /* vert outer gap between windows and screen edge */
 static       int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
+static const char col_gray1[]       = "#4D4D4D"; // tages and xset root 
 static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray3[]       = "#FF44C6";
+static const char col_gray4[]       = "#BD93F9"; // font color
+static const char col_cyan[]        = "#282A36";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 
-static const char normmarkcolor[]   = "#775500";	/*border color for marked client*/
-static const char selmarkcolor[]    = "#775577";	/*border color for marked client on focus*/
+static const char normmarkcolor[]   = "#FF44C6";	/*border color for marked client*/
+static const char selmarkcolor[]    = "#8BE9FD";	/*border color for marked client on focus*/
 
 static const char *colors[][4]      = {
 	/*               fg         bg         border     mark   */
@@ -47,7 +47,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
@@ -94,10 +94,23 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+//my commands 
+static const char *qute[]  = {"qutebrowser",NULL};
+static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
+static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
+static const char *vs_code[]= {"code",NULL };
+static const char *nvim[]= {"st", "-e", "nvim", NULL };
+static const char *s_shot[]= {"flameshot","gui",NULL };
+static const char *vol_up[] = {"pactl" ,"set-sink-volume", "1" , "+5%", NULL};
+static const char *vol_down[] = {"pactl" ,"set-sink-volume", "1" , "-5%", NULL};
+static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "1" , "toggle", NULL}; 
+static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
+static const char *shutdown[]  = { "sudo", "shutdown", "+0", NULL };
+
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_semicolon,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_t,      spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -151,20 +164,32 @@ static const Key keys[] = {
   { MODKEY|Mod1Mask,              XK_g,      setlayout,       {.v = &layouts[7]} },
   { MODKEY|Mod1Mask,              XK_c,      setlayout,       {.v = &layouts[11]} },
 	{ MODKEY|ShiftMask,             XK_q,      exitdwm,           {0} },
- 	{ MODKEY|ShiftMask,             XK_Return,      togglefullscr,  {0} },
+ 	{ MODKEY|ShiftMask,             XK_Return, togglefullscr,  {0} },
   { MODKEY|ShiftMask,             XK_s,  togglealwaysontop, {0} },
   { MODKEY,                       XK_x,      togglecanfocusfloating,   {0} }, 
  	{ MODKEY|ShiftMask,             XK_h,      setcfact,       {.f = +0.25} },
 	{ MODKEY|ShiftMask,             XK_l,      setcfact,       {.f = -0.25} },
 	{ MODKEY|ShiftMask,             XK_o,      setcfact,       {.f =  0.00} },
   { MODKEY,                       XK_Return, fullscreen,     {0} },
-  { MODKEY,                       XK_semicolon, togglemark,   {0} },
-  { MODKEY,                       XK_o,      swapfocus,      {0} },
-  { MODKEY,                       XK_u,      swapclient,     {0} },
-  { MODKEY,                       XK_c,      movecenter,     {0} },
+  { MODKEY|ShiftMask,             XK_semicolon, togglemark,   {0} },
+  { MODKEY,                       XK_e,      swapfocus,      {0} },
+  { MODKEY,                       XK_r,      swapclient,     {0} },
+  { MODKEY|ControlMask,           XK_c,      movecenter,     {0} },
  	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-  { MODKEY,             XK_s      ,togglesticky ,      {0} },
+  { MODKEY,                       XK_s      ,togglesticky ,      {0} },
+	{ MODKEY,                       XK_f,      spawn,          {.v = qute } },
+  { ShiftMask,                    XK_Alt_L,  spawn,      {.v =lay_change} },
+  { MODKEY,                       XK_p,      spawn,      {.v = Monitor_set } },
+  { MODKEY|ShiftMask,             XK_c,      spawn,       {.v=vs_code}},
+  { MODKEY,                       XK_c,      spawn,       {.v=nvim}},
+  { MODKEY,                       XK_Print,  spawn,      {.v = s_shot} },
+  { MODKEY,                       XK_minus,  spawn,      {.v=vol_down} },
+  { MODKEY,                       XK_equal,  spawn,      {.v=vol_up} }, 
+  { MODKEY,                       XK_m,      spawn,      {.v = vol_mute } },
+  { MODKEY,                       XK_F5,        spawn,      {.v=reboot}},
+  { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
+
 };
 
 /* resizemousescroll direction argument list */

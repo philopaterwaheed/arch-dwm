@@ -2665,7 +2665,7 @@ fullscreen(const Arg *arg)
 {
 	if (selmon->showbar) {
 		for(last_layout = (Layout *)layouts; last_layout != selmon->lt[selmon->sellt]; last_layout++);
-		setlayout(&((Arg) { .v = &layouts[2] }));
+		setlayout(&((Arg) { .v = &layouts[1] }));
 	} else {
 		setlayout(&((Arg) { .v = last_layout }));
 	}
@@ -2761,9 +2761,11 @@ togglemark(const Arg *arg)
 void
 movecenter(const Arg *arg)
 {
+  if (selmon->sel != NULL){
 	selmon->sel->x = selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
 	selmon->sel->y = selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
   arrange(selmon);
+  }
 }
 
 void
@@ -2772,13 +2774,15 @@ movestack(const Arg *arg) {
 
 	if(arg->i > 0) {
 		/* find the client after selmon->sel */
-		for(c = selmon->sel->next; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
-		if(!c)
-			for(c = selmon->clients; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
-
+    if (selmon->sel != NULL){
+      for(c = selmon->sel->next; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
+      if(!c)
+        for(c = selmon->clients; c && (!ISVISIBLE(c) || c->isfloating); c = c->next);
+    }
 	}
 	else {
 		/* find the client before selmon->sel */
+    if (selmon->clients != NULL){
 		for(i = selmon->clients; i != selmon->sel; i = i->next)
 			if(ISVISIBLE(i) && !i->isfloating)
 				c = i;
@@ -2786,6 +2790,7 @@ movestack(const Arg *arg) {
 			for(; i; i = i->next)
 				if(ISVISIBLE(i) && !i->isfloating)
 					c = i;
+    }
 	}
 	/* find the client before selmon->sel and c */
 	for(i = selmon->clients; i && (!p || !pc); i = i->next) {
