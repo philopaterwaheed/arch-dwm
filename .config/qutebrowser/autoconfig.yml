@@ -6,10 +6,23 @@
 
 config_version: 2
 settings:
+  auto_save.session:
+    global: true
+  content.proxy:
+    global: system
+  content.register_protocol_handler:
+    https://mail.google.com?extsrc=mailto&url=%25s: false
+  scrolling.bar:
+    global: never
+  spellcheck.languages:
+    global:
+    - en-US
   statusbar.show:
     global: always
   tabs.show:
-    global: never
+    global: always
+  url.default_page:
+    global: file:/home/philosan/.config/qutebrowser/startpage/index.html
   url.start_pages:
     global: file:/home/philosan/.config/qutebrowser/startpage/index.html
   zoom.default:

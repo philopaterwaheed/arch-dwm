@@ -1,4 +1,5 @@
-
+local M =  {}
+M.setup = function()
 local servers = {
 }
 
@@ -43,3 +44,5 @@ for _, server in pairs(servers) do
 
 	lspconfig[server].setup(opts)
 end
+end
+return M

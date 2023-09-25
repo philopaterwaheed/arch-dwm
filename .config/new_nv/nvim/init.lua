@@ -14,3 +14,5 @@ require "philo.dash"
 require "philo.tel"
 require "philo.color"
 require "philo.git"
+require "philo.comm"
+

@@ -53,7 +53,24 @@ local plugins = {
    	end,
 	ft = {"css", "html", }, 
 	},
-   "tpope/vim-fugitive",
+   {"tpope/vim-fugitive",
+	cmd ="G"; 
+   },
+  {
+    "numToStr/Comment.nvim",
+	 config = function()
+   	  require("philo.comm").setup()
+   	end,
+    keys = {
+      { "gcc", mode = "n", desc = "Comment toggle current line" },
+      { "gc", mode = { "n", "o" }, desc = "Comment toggle linewise" },
+      { "gc", mode = "x", desc = "Comment toggle linewise (visual)" },
+      { "gbc", mode = "n", desc = "Comment toggle current block" },
+      { "gb", mode = { "n", "o" }, desc = "Comment toggle blockwise" },
+      { "gb", mode = "x", desc = "Comment toggle blockwise (visual)" },
+    },
+    dependencies = {'JoosepAlviste/nvim-ts-context-commentstring',}, 
+    },
    {
     'lewis6991/gitsigns.nvim',
     dependencies= { 'nvim-lua/plenary.nvim' }
@@ -102,7 +119,14 @@ local plugins = {
 
   -- LSP
  "neovim/nvim-lspconfig", -- enable LSP
- "williamboman/mason.nvim", -- simple to use language server installer
+ {"williamboman/mason.nvim",
+
+	 config = function()
+   	  require("philo.lsp.mason").setup()
+   	end,
+cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+ }, -- simple to use language server installer
+ 
  "williamboman/mason-lspconfig.nvim", -- simple to use language server installer
  'jose-elias-alvarez/null-ls.nvim', -- LSP diagnostics and code actions
  "williamboman/nvim-lsp-installer", -- simple to use language server installer

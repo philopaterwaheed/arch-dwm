@@ -14,7 +14,7 @@ end
 	theme = 'hyper',
 	items = {},
      header = {
-"philo was here and to stay here",
+"philo was here and made awesomeness",
 
 "───────────────────────────────────────────────────────────────────────",
 "██████████████─██████──██████─██████████─██████─────────██████████████─",
@@ -39,7 +39,7 @@ end
 		"	",	
 		"code god is up to work",
 		"	",	
-		"love is uselees coding is not",	
+		"Throughout Heaven and earth, I alone am the honored one"
 	},
 
 },

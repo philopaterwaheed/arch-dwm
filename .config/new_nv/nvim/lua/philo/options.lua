@@ -11,3 +11,4 @@ vim.opt.clipboard = "unnamed"		-- copies to the clipboard -- you should install 
 --vim.api.nvim_set_option("clipboard","unnamed") 
 vim.opt.undofile = true
 --vim.opt.signcolumn = 'auto:2'
+vim.opt.cursorline  = true

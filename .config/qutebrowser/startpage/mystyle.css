@@ -8,16 +8,33 @@ body{
 	background-size : 100% 100%;
 	background-attachment : fixed; 
 }
+
 .sqaure{
 	height: 50px;
 	width: 50px;
 }
+
+.rightSqaure{
+	color : red;
+	display : flex ;
+	flex-direction :  row-reverse ;
+	float : right;
+
+	top : 0 ; 
+}
+
 .vspace{
 	height: 50px;
 	width: 50px;
 
 }
+
 img {
 	max-width: 100%;
 	max-height: 100%;
+}
+
+.container {
+	display : flex;
+	justify-content : scpace-evenly;
 }
