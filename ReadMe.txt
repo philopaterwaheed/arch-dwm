@@ -89,3 +89,4 @@ sudo nvidia-xconfig
 Reboot your system: After completing the above steps, reboot your system to load the NVIDIA driver:
 Copy
 sudo reboot
+nvtop to monitor
