@@ -37,3 +37,55 @@ https://bit.ly/3qmvO42
 for background () {
 past setbg.sh in dwm/ 
 }
+o set up NVIDIA drivers for the Lenovo IdeaPad Gaming 3 on Arch Linux, follow these steps:
+
+Update your system: Open a terminal and run the following commands to update your system's packages:
+Copy
+sudo pacman -Syu
+```
+
+Identify your NVIDIA GPU: Run the following command to identify the exact model of your NVIDIA GPU:
+Copy
+lspci -k | grep -A 2 -i "VGA"
+```
+
+Install the necessary packages: Install the required packages for NVIDIA driver support by running the following command:
+Copy
+sudo pacman -S nvidia nvidia-utils
+```
+
+Generate the initial RAM disk: Run the following command to generate an initial RAM disk with the NVIDIA driver:
+Copy
+sudo mkinitcpio -P
+```
+
+Enable the NVIDIA kernel module: Edit the /etc/mkinitcpio.conf file using a text editor such as nano or vim:
+Copy
+sudo nano /etc/mkinitcpio.conf
+```
+
+Find the line that begins with `MODULES=` and add `nvidia` to the list of modules. It should look like this:
+MODULES=(nvidia)
+awk
+Copy
+
+Save the file and exit the text editor.
+
+Regenerate the initial RAM disk: Run the following command to regenerate the initial RAM disk with the updated configuration:
+Copy
+sudo mkinitcpio -P
+```
+
+Enable the NVIDIA persistence daemon: Run the following command to enable and start the NVIDIA persistence daemon:
+Copy
+sudo systemctl enable --now nvidia-persistenced
+```
+
+Configure Xorg: If you are using Xorg as your display server, create a new Xorg configuration file by running the following command:
+Copy
+sudo nvidia-xconfig
+```
+
+Reboot your system: After completing the above steps, reboot your system to load the NVIDIA driver:
+Copy
+sudo reboot
