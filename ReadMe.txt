@@ -85,6 +85,7 @@ Configure Xorg: If you are using Xorg as your display server, create a new Xorg 
 Copy
 sudo nvidia-xconfig
 ```
+https://wiki.denshi.org/hypha/client/nvidia
 
 Reboot your system: After completing the above steps, reboot your system to load the NVIDIA driver:
 Copy
