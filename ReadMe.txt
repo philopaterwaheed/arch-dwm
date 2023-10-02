@@ -91,3 +91,4 @@ Reboot your system: After completing the above steps, reboot your system to load
 Copy
 sudo reboot
 nvtop to monitor
+https://wiki.denshi.org/hypha/client/nvidia
