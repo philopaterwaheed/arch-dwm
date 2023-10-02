@@ -1,0 +1,479 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Client/Nvidia</title>
+	<link rel="icon" href="/static/favicon.ico">
+	<link rel="stylesheet" href="/static/style.css">
+	<meta property="og:title" content="Client/Nvidia"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="http://127.0.0.1:1737/binary/images/nvidia"/>
+<meta property="og:url" content="http://127.0.0.1:1737/hypha/client/nvidia"/>
+<meta property="og:determiner" content=""/>
+<meta property="og:description" content="NVIDIA GPUs are notoriously hard to setup on Linux. This comprehensive guide aims to make this relatively difficult process streamlined and easy, to maximize either performance or battery life."/>
+</head>
+<body data-rrh-addr="/hypha/client/nvidia" data-rrh-cats=":client:">
+<header>
+	<nav class="main-width top-bar">
+		<ul class="top-bar__wrapper">
+			<li class="top-bar__section top-bar__section_home">
+				<div class="top-bar__home-link-wrapper">
+					<a class="top-bar__home-link" href="/"><b>DenshiWiki</b></a>
+				</div>
+			</li>
+			<li class="top-bar__section top-bar__section_search">
+				<form class="top-bar__search" method="GET" action="/title-search">
+					<input type="text" name="q" class="top-bar__search-bar"
+					       placeholder="Search by title">
+				</form>
+			</li>
+			<li class="top-bar__section top-bar__section_auth">
+                
+<ul class="top-bar__auth auth-links">
+	<li class="auth-links__box auth-links__user-box">
+		
+			<a href="/login" class="auth-links__link auth-links__login-link">
+				Login
+			</a>
+		
+	</li>
+	
+</ul>
+
+			</li>
+			<li class="top-bar__section top-bar__section_highlights">
+				<ul class="top-bar__highlights">
+					
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="/recent-changes">Recent changes</a>
+						</li>
+					
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="/list">All hyphae</a>
+						</li>
+					
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="/random">Random</a>
+						</li>
+					
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="/help">Help</a>
+						</li>
+					
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="/category">Categories</a>
+						</li>
+					
+				</ul>
+			</li>
+		</ul>
+	</nav>
+</header>
+
+
+<main class="main-width">
+	<section id="hypha">
+		
+
+		
+
+		
+<h1 class="navi-title"><a href="/hypha/home">💾<span aria-hidden="true" class="navi-title__colon">:</span></a><a href="/hypha/client" rel="up">Client</a><span aria-hidden="true" class="navi-title__separator">/</span><a href="/hypha/client/nvidia" rel="bookmark">Nvidia</a>
+</h1>
+
+		
+				<article class="mycomarkup-doc">
+	<section class="img-gallery img-gallery_one-image img-gallery_layout-normal" id="img-1">
+		<figure class="img-gallery__entry">
+			<a class="wikilink wikilink_internal wikilink_new" href="/hypha/images/nvidia">Hypha <i>images/nvidia</i> does not exist</a>
+		</figure>
+	</section>
+	<p id="paragraph-1">
+		NVIDIA GPUs are <strong>notoriously hard</strong> to setup on Linux. This comprehensive guide aims to make this relatively difficult process streamlined and easy, to maximize either performance or battery life.
+	</p>
+	<p id="paragraph-2">
+		<mark>This guide is aimed <strong>specifically</strong> at Arch Linux systems. The steps described here may not work on other distributions, but still remain indicative of the general setup requried to get NVIDIA working.</mark>
+	</p>
+	<h2 id="NVIDIA_Optimus_Laptops">
+		NVIDIA Optimus (Laptops)
+		<a class="heading__link" href="#NVIDIA_Optimus_Laptops">
+		</a>
+	</h2>
+	<p id="paragraph-3">
+		Optimus refers to the underlying system in laptops that allows them to manage both an Intel iGPU and an NVIDIA (dedicated) GPU. There are various ways of managing Optimus, and this section of the guide will run through various options.
+	</p>
+	<p id="paragraph-4">
+		By running the following command, one can check what GPU is currently rendering their screen:
+	</p>
+<pre class="codeblock" id="codeblock-1"><code class="language-plain">glxinfo | grep &#34;renderer&#34;</code></pre>
+	<p id="paragraph-5">
+		If no configuration has been done, this should default to the <strong>open-source Mesa driver. </strong>This means your NVIDIA card is not rendering the screen at the moment;
+	</p>
+	<h4 id="Prerequisites">
+		Prerequisites
+		<a class="heading__link" href="#Prerequisites">
+		</a>
+	</h4>
+	<p id="paragraph-6">
+		To setup NVIDIA cards on laptops, the following packages are required:
+	</p>
+	<ul id="list-2">
+		<li class="item_unordered">
+			<p>
+				the NVIDIA driver
+			</p>
+		</li>
+		<li class="item_unordered">
+			<p>
+				Xorg Xrandr
+			</p>
+		</li>
+	</ul>
+	<h3 id="Manual_setup">
+		Manual setup
+		<a class="heading__link" href="#Manual_setup">
+		</a>
+	</h3>
+	<p id="paragraph-7">
+		This section covers the process of <strong>manually creating and editing config files</strong> to setup your system the way you want.
+	</p>
+	<h4 id="PCI_Bus">
+		PCI Bus
+		<a class="heading__link" href="#PCI_Bus">
+		</a>
+	</h4>
+	<p id="paragraph-8">
+		These sections will require you to determine the PCI bus of your NVIDIA card. This can be accomplished by running:
+	</p>
+<pre class="codeblock" id="codeblock-2"><code class="language-plain">lspci | grep -i nvidia | awk &#39;{print $1}&#39;</code></pre>
+	<p id="paragraph-9">
+		<mark>This guide will assume your PCI bus is <code>PCI:1:0:0</code>. Please change this according to your setup.</mark>
+	</p>
+	<h4 id="Only_use_NVIDIA">
+		Only use NVIDIA
+		<a class="heading__link" href="#Only_use_NVIDIA">
+		</a>
+	</h4>
+	<p id="paragraph-10">
+		Firstly, remove any blacklists or previous NVIDIA Optimus configuration:
+	</p>
+<pre class="codeblock" id="codeblock-3"><code class="language-plain">sudo rm -rf /etc/modprobe.d/blacklist-nvidia.conf /lib/udev/rules.d/50-remove-nvidia.rules</code></pre>
+	<p id="paragraph-11">
+		Write this to <code>/etc/X11/xorg.conf.d/90-nvidia.conf</code>:
+	</p>
+<pre class="codeblock" id="codeblock-4"><code class="language-plain">Section &#34;ServerLayout&#34;
+    Identifier &#34;layout&#34;
+    Screen 0 &#34;nvidia&#34;
+    Inactive &#34;intel&#34;
+EndSection
+
+Section &#34;Device&#34;
+    Identifier &#34;nvidia&#34;
+    Driver &#34;nvidia&#34;
+    BusID &#34;PCI:1:0:0&#34;
+EndSection
+
+Section &#34;Screen&#34;
+    Identifier &#34;nvidia&#34;
+    Device &#34;nvidia&#34;
+    Option &#34;AllowEmptyInitialConfiguration&#34;
+EndSection
+
+Section &#34;Device&#34;
+    Identifier &#34;intel&#34;
+    Driver &#34;modesetting&#34;
+EndSection
+
+Section &#34;Screen&#34;
+    Identifier &#34;intel&#34;
+    Device &#34;intel&#34;
+EndSection</code></pre>
+	<p id="paragraph-12">
+		Then create <code>/etc/modprobe.d/nvidia.conf</code>:
+	</p>
+<pre class="codeblock" id="codeblock-5"><code class="language-plain">options nvidia-drm modeset=1</code></pre>
+	<h4 id="Xinit_and_Display_Managers">
+		Xinit and Display Managers
+		<a class="heading__link" href="#Xinit_and_Display_Managers">
+		</a>
+	</h4>
+	<p id="paragraph-13">
+		To actually enable the use of the NVIDIA card, global Xorg configuration is often not enough. The <strong>individual display/login mangers</strong> (or your <code>~/.xinitrc</code> file) have to be configured to properly enable NVIDIA rendering.
+	</p>
+	<p id="paragraph-14">
+		If using <strong>Xinit</strong>, add the following to your <code>~/.xinitrc</code> file at the beginning:
+	</p>
+<pre class="codeblock" id="codeblock-6"><code class="language-plain">xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto</code></pre>
+	<p id="paragraph-15">
+		If using any display managers, change the following configuration files:
+	</p>
+	<h5 id="LightDM">
+		LightDM
+		<a class="heading__link" href="#LightDM">
+		</a>
+	</h5>
+	<p id="paragraph-16">
+		Create a script, <code>/etc/lightdm/display_setup.sh</code>, and add the following:
+	</p>
+<pre class="codeblock" id="codeblock-7"><code class="language-plain">#!/bin/sh
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto</code></pre>
+	<p id="paragraph-17">
+		Make the script executable by running:
+	</p>
+<pre class="codeblock" id="codeblock-8"><code class="language-plain">sudo chmod +x /etc/lightdm/display_setup.sh</code></pre>
+	<p id="paragraph-18">
+		Then, edit <code>/etc/lightdm/lightdm.conf</code> to execute this script when launching LightDM:
+	</p>
+<pre class="codeblock" id="codeblock-9"><code class="language-plain">[Seat:*]
+display-setup-script=/etc/lightdm/display_setup.sh</code></pre>
+	<h5 id="SDDM">
+		SDDM
+		<a class="heading__link" href="#SDDM">
+		</a>
+	</h5>
+	<p id="paragraph-19">
+		SDDM has a convenient Xsetup file located in <code>/usr/share/sddm/scripts/Xsetup</code> that can be modified to add any parameters you wish. Add the following to enable NVIDIA:
+	</p>
+<pre class="codeblock" id="codeblock-10"><code class="language-plain">xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto</code></pre>
+	<h5 id="GDM">
+		GDM
+		<a class="heading__link" href="#GDM">
+		</a>
+	</h5>
+	<p id="paragraph-20">
+		Firstly, ensure GDM is launching Xorg sessions and not Wayland sessions by editing <code>/etc/gdm/custom.conf</code>:
+	</p>
+<pre class="codeblock" id="codeblock-11"><code class="language-plain">WaylandEnable=false</code></pre>
+	<p id="paragraph-21">
+		Then create two new files, <code>/usr/share/gdm/greeter/autostart/optimus.desktop</code> and <code>/etc/xdg/autostart/optimus.desktop</code>, and write the following contents to them:
+	</p>
+<pre class="codeblock" id="codeblock-12"><code class="language-plain">[Desktop Entry]
+Type=Application
+Name=Optimus
+Exec=sh -c &#34;xrandr --setprovideroutputsource modesetting NVIDIA-0; xrandr --auto&#34;
+NoDisplay=true
+X-GNOME-Autostart-Phase=DisplayServer</code></pre>
+	<h4 id="Only_use_the_iGPU">
+		Only use the iGPU
+		<a class="heading__link" href="#Only_use_the_iGPU">
+		</a>
+	</h4>
+	<p id="paragraph-22">
+		Firstly, remove any custom NVIDIA Xorg configuration:
+	</p>
+<pre class="codeblock" id="codeblock-13"><code class="language-plain">sudo rm -rf /etc/X11/xorg.conf.d/90-nvidia.conf /etc/modprobe.d/nvidia.conf</code></pre>
+	<p id="paragraph-23">
+		<mark>Ensure any display manager or Xinit configuration for NVIDIA is also removed!</mark>
+	</p>
+	<p id="paragraph-24">
+		Begin by blacklisting the NVIDIA card by creating <code>/etc/modprobe.d/blacklist-nvidia.conf</code>:
+	</p>
+<pre class="codeblock" id="codeblock-14"><code class="language-plain">blacklist nouveau
+blacklist nvidia
+blacklist nvidia_drm
+blacklist nvidia_uvm
+blacklist nvidia_modeset
+
+alias nouveau off
+alias nvidia off
+alias nvidia_drm off
+alias nvidia_uvm off
+alias nvidia_modeset off</code></pre>
+	<p id="paragraph-25">
+		Then create <code>/lib/udev/rules.d/50-remove-nvidia.rules</code> and add the following:
+	</p>
+<pre class="codeblock" id="codeblock-15"><code class="language-plain">= Remove NVIDIA USB xHCI Host Controller devices, if present
+ACTION==&#34;add&#34;, SUBSYSTEM==&#34;pci&#34;, ATTR{vendor}==&#34;0x10de&#34;, ATTR{class}==&#34;0x0c0330&#34;, ATTR{power/control}=&#34;auto&#34;, ATTR{remove}=&#34;1&#34;
+
+= Remove NVIDIA USB Type-C UCSI devices, if present
+ACTION==&#34;add&#34;, SUBSYSTEM==&#34;pci&#34;, ATTR{vendor}==&#34;0x10de&#34;, ATTR{class}==&#34;0x0c8000&#34;, ATTR{power/control}=&#34;auto&#34;, ATTR{remove}=&#34;1&#34;
+
+= Remove NVIDIA Audio devices, if present
+ACTION==&#34;add&#34;, SUBSYSTEM==&#34;pci&#34;, ATTR{vendor}==&#34;0x10de&#34;, ATTR{class}==&#34;0x040300&#34;, ATTR{power/control}=&#34;auto&#34;, ATTR{remove}=&#34;1&#34;
+
+= Finally, remove the NVIDIA dGPU
+ACTION==&#34;add&#34;, SUBSYSTEM==&#34;pci&#34;, ATTR{vendor}==&#34;0x10de&#34;, ATTR{class}==&#34;0x03[0-9]*&#34;, ATTR{power/control}=&#34;auto&#34;, ATTR{remove}=&#34;1&#34;</code></pre>
+	<p id="paragraph-26">
+		Finally, remove any NVIDIA configuration in your display manager or your <code>~/.xinitrc</code> file, if applicable.
+	</p>
+	<h4 id="Hybrid_system">
+		Hybrid system
+		<a class="heading__link" href="#Hybrid_system">
+		</a>
+	</h4>
+	<p id="paragraph-27">
+		While your Linux system will automatically run Xorg on your iGPU by default, this doesn&#39;t prevent the NVIDIA GPU from drawing <strong>select windows</strong> on your system. This can be achieved through <strong>NVIDIA PRIME,</strong> a hybrid graphics technology.
+	</p>
+	<p id="paragraph-28">
+		On Arch Linux, the following package can be installed:
+	</p>
+<pre class="codeblock" id="codeblock-16"><code class="language-plain">sudo pacman -S nvidia-prime</code></pre>
+	<p id="paragraph-29">
+		After installing this, one can run any Xorg program with <code>prime-run</code> to run it under the NVIDIA GPU.
+	</p>
+	<h3 id="EnvyControl">
+		EnvyControl
+		<a class="heading__link" href="#EnvyControl">
+		</a>
+	</h3>
+	<p id="paragraph-30">
+		There are multiple simple and easy-to-use scripts one can install to make managing NVIDIA Optimus a breeze. One such example is <a class="wikilink wikilink_external wikilink_https" href="https://github.com/geminis3/envycontrol">EnvyControl,</a> a minimal python script which can automatically switch the GPU modes and disable/blacklist the NVIDIA GPU to save power, all on demand.
+	</p>
+	<h4 id="Installation">
+		Installation
+		<a class="heading__link" href="#Installation">
+		</a>
+	</h4>
+	<p id="paragraph-31">
+		EnvyControl can be installed from source:
+	</p>
+<pre class="codeblock" id="codeblock-17"><code class="language-plain">git clone https://github.com/geminis3/envycontrol.git
+cd envycontrol
+sudo pip install .</code></pre>
+	<p id="paragraph-32">
+		Alternatively, EnvyControl is available in the <a class="wikilink wikilink_external wikilink_https" href="https://aur.archlinux.org/packages/envycontrol/">AUR</a>:
+	</p>
+<pre class="codeblock" id="codeblock-18"><code class="language-plain">paru -S envycontrol</code></pre>
+	<h4 id="Usage">
+		Usage
+		<a class="heading__link" href="#Usage">
+		</a>
+	</h4>
+	<p id="paragraph-33">
+		EnvyControl automatically supports and can configure the following login managers:
+	</p>
+	<ul id="list-4">
+		<li class="item_unordered">
+			<p>
+				GDM
+			</p>
+		</li>
+		<li class="item_unordered">
+			<p>
+				SDDM
+			</p>
+		</li>
+		<li class="item_unordered">
+			<p>
+				LightDM
+			</p>
+		</li>
+	</ul>
+	<p id="paragraph-34">
+		If using Xinit, one can always add these lines to your <code>~/.xinitrc</code> whenever NVIDIA is in use:
+	</p>
+<pre class="codeblock" id="codeblock-19"><code class="language-plain">xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+xrandr --dpi 96</code></pre>
+	<p id="paragraph-35">
+		To actually switch between graphics modes, simply run EnvyControl as such:
+	</p>
+<pre class="codeblock" id="codeblock-20"><code class="language-plain">sudo envycontrol --switch nvidia</code></pre>
+	<p id="paragraph-36">
+		After this, you will be prompted to reboot, and your system will be running under your specified GPU.
+	</p>
+	<p id="paragraph-37">
+		<mark>Please note: <strong>Disabling the NVIDIA GPU</strong> using <code>envycontrol --switch integrated</code> will cause the script to be <em>unable to switch back to NVIDIA</em> unless the system is switched back to <code>hybrid</code> mode.</mark>
+	</p>
+</article>
+
+		
+	</section>
+	<section class="prevnext">
+		
+		<a class="prevnext__el prevnext__prev" href="/hypha/client/linux" rel="prev">← Linux</a>
+		
+		
+	</section>
+
+	<section id="hypha-bottom">
+   		
+
+<nav class="hypha-info">
+	<ul class="hypha-info__list">
+		
+
+
+
+<li class="hypha-info__entry hypha-info__entry_history">
+	<a class="hypha-info__link" href="/history/client/nvidia">View history</a>
+</li>
+
+
+		
+
+
+
+
+		
+
+
+
+
+		
+
+
+
+<li class="hypha-info__entry hypha-info__entry_text">
+	<a class="hypha-info__link" href="/text/client/nvidia">View markup</a>
+</li>
+
+
+	
+		
+
+
+
+
+	
+		
+
+
+
+<li class="hypha-info__entry hypha-info__entry_backlinks">
+	<a class="hypha-info__link" href="/backlinks/client/nvidia">1 backlink</a>
+</li>
+
+
+	</ul>
+</nav>
+
+	</section>
+</main>
+
+
+    
+    
+	<aside class="layout-card categories-card">
+		<h2 class="layout-card__title">Categories</h2>
+		<ul class="categories-card__entries">
+            
+				<li class="categories-card__entry">
+					<a class="categories-card__link" href="/category/client">Client</a>
+					<form method="POST" action="/remove-from-category" class="categories-card__remove-form">
+						<input type="hidden" name="cat" value="client">
+						<input type="hidden" name="hypha" value="client/nvidia">
+						<input type="hidden" name="redirect-to" value="/hypha/client/nvidia">
+                        
+					</form>
+				</li>
+            
+            
+		</ul>
+	</aside>
+
+
+
+
+
+<script src="/static/common.js"></script>
+<script src="/static/shortcuts.js"></script>
+<script src="/static/view.js"></script>
+
+</body>
+</html>
