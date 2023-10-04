@@ -101,11 +101,13 @@ static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
 static const char *vs_code[]= {"code",NULL };
 static const char *nvim[]= {"st", "-e", "nvim", NULL };
 static const char *s_shot[]= {"flameshot","gui",NULL };
-static const char *vol_up[] = {"pactl" ,"set-sink-volume", "1" , "+5%", NULL};
-static const char *vol_down[] = {"pactl" ,"set-sink-volume", "1" , "-5%", NULL};
-static const char *vol_mute[] = {"pactl" ,"set-sink-mute", "1" , "toggle", NULL}; 
+static const char *vol_up[] = {"amixer" ,"sset", "'Master'" , "5%+", NULL};
+static const char *vol_down[] = {"amixer" ,"sset", "'Master'" , "5%-", NULL};
+static const char *vol_mute[] = {"amixer -D pulse set Master 1+ toggle",NULL}; 
 static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
 static const char *shutdown[]  = { "sudo", "shutdown", "+0", NULL };
+static const char *bridown[]  = { "sudo", "brillo", "-q", "-U","5", NULL };
+static const char *briup[]  = { "sudo", "brillo", "-q", "-A","5", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -189,6 +191,8 @@ static const Key keys[] = {
   { MODKEY,                       XK_m,      spawn,      {.v = vol_mute } },
   { MODKEY,                       XK_F5,        spawn,      {.v=reboot}},
   { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
+  { MODKEY,                       XK_F1,      spawn,      {.v=briup}},
+  { MODKEY,                       XK_F2,      spawn,      {.v=bridown}},
 
 };
 

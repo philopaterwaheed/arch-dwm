@@ -3,7 +3,7 @@
 
 ## DISK
 hdd() {
-  hdd="$(df -h | awk 'NR==4{print $3, $5}')"
+  hdd="$(df -h | awk 'NR==5{print $3, $5}')"
   echo -e ": $hdd"
 }
 
@@ -26,15 +26,20 @@ cpu() {
 ##heat
 heat()
 {
-heat=$(sensors | grep -A 0  'Tctl:' |tr -d -c 0-9)
+heat=$(sensors |grep -A 0 'Package' | tr -d -c 0-9| cut -c2-4)
 echo -e  "$((heat/10)) "
 
 
 }
 ## VOLUME
 vol() {
-    vol=$(pamixer --get-volume-human)
+    vol=$(awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master))
     echo -e ": $vol"
+}
+battt() {
+	batt=$(acpi -b | grep -P -o '[0-9]+(?=%)')
+	ch=$(acpi -b |grep -c "Discharging")
+    echo -e " : $batt $ch"
 }
 
 SLEEP_SEC=3
@@ -45,6 +50,6 @@ SLEEP_SEC=3
 # So I would love to add more functions to this script but it makes the 
 # echo output too long to display correctly.
 while true; do
-xsetroot -name  "$(heat) | $(cpu)| $(mem) | $(hdd) |  :$(date) | $(vol) "
+	xsetroot -name  "$(battt) | $(heat) | $(cpu)| $(mem) | $(hdd) |  :$(date) | $(vol) "
 	sleep $SLEEP_SEC
 done

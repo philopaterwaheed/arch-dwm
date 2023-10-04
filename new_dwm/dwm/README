@@ -46,19 +46,3 @@ Configuration
 -------------
 The configuration of dwm is done by creating a custom config.h
 and (re)compiling the source code.
-
-if souned disapeared after boot
-gpasswd -a username audio
-
-for souned drivers 
-On an educated guess, install sof-firmware and alsa-ucm-conf https://wiki.archlinux.org/index.php/Ad … A_Firmware
-
-for touch pad 
-/etc/X11/xorg.conf.d/30-touchpad.conf
-Section "InputClass"
-    Identifier "touchpad catchall"
-    Driver "libinput"
-    Option "Tapping" "on"
-EndSection
-for bightness
-brillo

@@ -1,5 +1,3 @@
-local M =  {}
-M.setup = function()
 require('gitsigns').setup {
 signs = {
     add = { text = "│" },
@@ -50,5 +48,3 @@ signs = {
     map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end
 }
-end 
-return M

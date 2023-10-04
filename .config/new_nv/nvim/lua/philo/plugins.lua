@@ -124,7 +124,7 @@ local plugins = {
 	 config = function()
    	  require("philo.lsp.mason").setup()
    	end,
-cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+--cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
  }, -- simple to use language server installer
  
  "williamboman/mason-lspconfig.nvim", -- simple to use language server installer
