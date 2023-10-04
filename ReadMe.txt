@@ -92,3 +92,18 @@ Copy
 sudo reboot
 nvtop to monitor
 https://wiki.denshi.org/hypha/client/nvidia
+if souned disapeared after boot
+gpasswd -a username audio
+
+for souned drivers 
+On an educated guess, install sof-firmware and alsa-ucm-conf https://wiki.archlinux.org/index.php/Ad … A_Firmware
+
+for touch pad 
+/etc/X11/xorg.conf.d/30-touchpad.conf
+Section "InputClass"
+    Identifier "touchpad catchall"
+    Driver "libinput"
+    Option "Tapping" "on"
+EndSection
+for bightness
+brillo
