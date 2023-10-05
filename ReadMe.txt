@@ -107,3 +107,4 @@ Section "InputClass"
 EndSection
 for bightness
 brillo
+sudo apt install tlp tlp-rdw 
