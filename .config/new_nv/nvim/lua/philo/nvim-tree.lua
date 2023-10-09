@@ -20,7 +20,7 @@ end
 -- nested options are documented by accessing them with `.` (eg: `:help nvim-tree.view.mappings.list`)
 nvim_tree.setup {
   auto_reload_on_write = true,
-  cmd = "NvimTreeToggle",
+  --[[ cmd = "NvimTreeToggle", ]]
   --disable_netrw = false, -> already disabled on `/core/options.lua`
   hijack_cursor = false,
   hijack_netrw = true,
@@ -39,7 +39,7 @@ nvim_tree.setup {
     cursorline = true,
     debounce_delay = 15,
     width = 34,
-    hide_root_folder = false,
+    --[[ hide_root_folder = false, ]]
     side = "left",
     preserve_window_proportions = false,
     number = false,
@@ -135,7 +135,7 @@ nvim_tree.setup {
     ignore_list = {},
   },
   system_open = {
-    cmd = "",
+    --[[ cmd = "", ]]
     args = {},
   },
   diagnostics = {

@@ -10,7 +10,7 @@ figlet philo san
 #colorscript random
 alias playm=mpg123
 alias d="cd ~/dwm"
-alias s=" cd ~/dwm/st"
+alias s=" cd ~/st"
 alias c=" cd ~/Dev/c++/"
 alias t=" cd ~/Dev/c++/text_editor/"
 alias n=" cd ~/.config/nvim/lua/philo/"
@@ -19,7 +19,10 @@ alias play="ffplay"
 alias vi="nvim"
 alias :x="exit"
 alias r="ranger"
-alias slp="systemctl suspend"
+alias p="cd /home/philosan/Dev/c++/ps/codeforces/indev"
+alias m1="sudo mount /dev/sda2 ~/Hdd"
+alias m2="sudo mount /dev/sda3 ~/HDD"
+alias slp="slock & loginctl suspend"
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
@@ -366,7 +369,10 @@ PROMPT_COMMAND=bash_prompt_command
 ##	which gets updated by $PROMT_COMMAND on behalf of the terminal
 bash_prompt
 unset bash_prompt
-
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=3
+POWERLINE_BASH_SELECT=3
+. /usr/share/powerline/bindings/bash/powerline.sh
 
 
 ### EOF ###

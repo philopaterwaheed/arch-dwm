@@ -62,10 +62,10 @@ void exitdwm ()
 
 	if (strcmp (exit_action, S_LOCK) == 0) system ("slock & sleep .5; xset dpms force off");
 	else if (strcmp (exit_action, S_RESTART_DWM) == 0){quit (& (const Arg) {1});}
-	else if (strcmp (exit_action, S_OFFSCREEN) == 0) system ("sleep .5;slock & systemctl suspend");
+	else if (strcmp (exit_action, S_OFFSCREEN) == 0) system ("sleep .5;slock &sudo loginctl suspend");
 	else if (strcmp (exit_action, S_EXIT) == 0) quit (& (const Arg) {0});
-	else if (strcmp (exit_action, S_REBOOT) == 0) system ("systemctl reboot");
-	else if (strcmp (exit_action, S_SHUTDOWN) == 0) system ("systemctl poweroff -i");
+	else if (strcmp (exit_action, S_REBOOT) == 0) system ("sudo loginctl reboot");
+	else if (strcmp (exit_action, S_SHUTDOWN) == 0) system ("sudo loginctl poweroff ");
 
 close_streams:
 	pclose (exit_menu);

@@ -18,7 +18,7 @@ settings:
     global:
     - en-US
   statusbar.show:
-    global: always
+    global: never
   tabs.show:
     global: always
   url.default_page:
