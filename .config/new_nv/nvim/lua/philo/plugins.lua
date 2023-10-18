@@ -113,18 +113,26 @@ local plugins = {
     -- Treesitter
   "nvim-treesitter/nvim-treesitter" ,
   "p00f/nvim-ts-rainbow" , 
+  {
+	"AndrewRadev/tagalong.vim",
+	dependencies = {"othree/html5.vim","tpope/vim-surround"},
+	ft="html",
+  },
   --use "nvim-treesitter/playground"
   -- snippets
 
 
   -- LSP
  "neovim/nvim-lspconfig", -- enable LSP
+ {"mfussenegger/nvim-jdtls",
+ 	ft={"java"}
+ },
  {"williamboman/mason.nvim",
 
 	 config = function()
    	  require("philo.lsp.mason").setup()
    	end,
-cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+--cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
  }, -- simple to use language server installer
  
  "williamboman/mason-lspconfig.nvim", -- simple to use language server installer

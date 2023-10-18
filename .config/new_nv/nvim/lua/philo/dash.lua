@@ -48,8 +48,9 @@ hide = {
 		--statusline
 	},
     })
-require("indent_blankline").setup{
-	filetype_exclude = {"dashboard"},
+require("ibl").setup{
+	--filetype_exclude = {"dashboard"},
+	exclude = { filetypes = {"dashboard"} }
 }
 local status_ok, impatient = pcall(require, "impatient")
 if not status_ok then

@@ -1,6 +1,8 @@
 local M =  {}
 M.setup = function()
 local servers = {
+	'clangd',
+	'pylsp',
 }
 
 local settings = {
@@ -14,6 +16,7 @@ local settings = {
 	},
 	log_level = vim.log.levels.INFO,
 	max_concurrent_installers = 4,
+	PATH = "prepend",
 }
 
 require("mason").setup(settings)

@@ -1,5 +1,5 @@
 local M = {}
-local servers = {'clangd','pylsp','html-lsp','cssls'}
+local servers = {'clangd','pylsp','html','cssls','jdtls'}
 -- TODO: backfill this to template
 M.setup = function()
   local signs = {
@@ -24,7 +24,7 @@ M.setup = function()
     underline = true,
     severity_sort = true,
     float = {
-      focusable = false,
+      focusable = true,
       style = "minimal",
       border = "rounded",
       source = "always",
@@ -68,8 +68,20 @@ require'lspconfig'.clangd.setup{
 	capabilities = capabilities,
 }
 require'lspconfig'.pylsp.setup{}
-require'lspconfig'.html.setup{}
-require'lspconfig'.cssls.setup{}
+require'lspconfig'.jdtls.setup{} -- you should use atleast version 17 of jdk and install jdtls throw yay
+require'lspconfig'.html.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+    handlers = handlers,
+  }
+require'lspconfig'.cssls.setup{
+	on_attach = function(client , buffer)
+	client.server_capabilities.signatureHelpProvider = false
+	on_attach(cleant, bufnr)
+	end,
+	capabilities = capabilities,
+}
+
 
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }
