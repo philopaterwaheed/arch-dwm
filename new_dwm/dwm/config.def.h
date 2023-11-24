@@ -44,6 +44,9 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+	{ "jetbrains-clion",     NULL,       NULL,       0,            1,           -1 },
+	{ "jetbrains-idea",     NULL,       NULL,       0,            1,           -1 },
+	{ "com-sun-tools-javac-launcher-Main",     NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -105,7 +108,7 @@ static const char *vol_up[] = {"amixer" ,"sset", "'Master'" , "5%+", NULL};
 static const char *vol_down[] = {"amixer" ,"sset", "'Master'" , "5%-", NULL};
 static const char *vol_mute[] = {"amixer -D pulse set Master 1+ toggle",NULL}; 
 static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
-static const char *shutdown[]  = { "sudo", "shutdown", "+0", NULL };
+static const char *shutdown[]  = { "sudo", "poweroff", NULL };
 static const char *bridown[]  = { "sudo", "brillo", "-q", "-U","5", NULL };
 static const char *briup[]  = { "sudo", "brillo", "-q", "-A","5", NULL };
 

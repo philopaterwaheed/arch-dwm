@@ -79,6 +79,19 @@ local plugins = {
   "akinsho/bufferline.nvim",
   "moll/vim-bbye",
  -- cmp plugins
+{
+"folke/which-key.nvim", 
+ event = "VeryLazy",
+  init = function()
+    vim.o.timeout = true
+    vim.o.timeoutlen = 300
+  end,
+  opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+},
  {"hrsh7th/nvim-cmp", -- The completion plugin
 
 	config = function()
@@ -113,12 +126,20 @@ local plugins = {
     -- Treesitter
   "nvim-treesitter/nvim-treesitter" ,
   "p00f/nvim-ts-rainbow" , 
+  {
+	"AndrewRadev/tagalong.vim",
+	dependencies = {"othree/html5.vim","tpope/vim-surround"},
+	ft="html",
+  },
   --use "nvim-treesitter/playground"
   -- snippets
 
 
   -- LSP
  "neovim/nvim-lspconfig", -- enable LSP
+ {"mfussenegger/nvim-jdtls",
+ 	ft={"java"}
+ },
  {"williamboman/mason.nvim",
 
 	 config = function()
