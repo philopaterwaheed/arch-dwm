@@ -108,3 +108,4 @@ EndSection
 for bightness
 brillo
 sudo apt install tlp tlp-rdw 
+tlp.conf goes to /etc/tlp.conf 
