@@ -1,5 +1,5 @@
 local M = {}
-local servers = {'clangd','pylsp','html','cssls','jdtls'}
+local servers = {'clangd','pylsp','html','cssls','jdtls','tsserver'}
 -- TODO: backfill this to template
 M.setup = function()
   local signs = {
@@ -68,6 +68,7 @@ require'lspconfig'.clangd.setup{
 	capabilities = capabilities,
 }
 require'lspconfig'.pylsp.setup{}
+require'lspconfig'.tsserver.setup{}
 require'lspconfig'.jdtls.setup{} -- you should use atleast version 17 of jdk and install jdtls throw yay
 require'lspconfig'.html.setup{
     on_attach = on_attach,

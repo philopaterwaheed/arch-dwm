@@ -79,6 +79,19 @@ local plugins = {
   "akinsho/bufferline.nvim",
   "moll/vim-bbye",
  -- cmp plugins
+{
+"folke/which-key.nvim", 
+ event = "VeryLazy",
+  init = function()
+    vim.o.timeout = true
+    vim.o.timeoutlen = 300
+  end,
+  opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+},
  {"hrsh7th/nvim-cmp", -- The completion plugin
 
 	config = function()
