@@ -101,6 +101,7 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *qute[]  = {"qutebrowser",NULL};
 static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
 static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
+static const char *dmenu_s [] = {"/home/philosan/dwm/dmenu_Hotcd.sh",NULL};
 static const char *vs_code[]= {"code",NULL };
 static const char *nvim[]= {"st", "-e", "nvim", NULL };
 static const char *s_shot[]= {"flameshot","gui",NULL };
@@ -196,6 +197,7 @@ static const Key keys[] = {
   { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
   { MODKEY,                       XK_F1,      spawn,      {.v=briup}},
   { MODKEY,                       XK_F2,      spawn,      {.v=bridown}},
+  { MODKEY,                       XK_g,      spawn,      {.v=dmenu_s}},
 
 };
 
