@@ -109,3 +109,5 @@ for bightness
 brillo
 sudo apt install tlp tlp-rdw 
 tlp.conf goes to /etc/tlp.conf 
+/etc/modprobe.d/blacklist-nvidia.conf
+/lib/udev/rules.d/50-remove-nvidia.rules
