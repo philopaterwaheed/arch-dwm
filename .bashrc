@@ -20,14 +20,22 @@ alias vi="nvim"
 alias :x="exit"
 alias r="ranger"
 alias p="cd /home/philosan/Dev/c++/ps/codeforces/indev"
+alias gra="cd /home/philosan/Dev/java/java_opengl_school"
 alias m1="sudo mount /dev/sda2 ~/Hdd"
-alias m2="sudo mount /dev/sda3 ~/HDD"
+alias m2="sudo mount /dev/sda3 ~/HDD1"
 alias slp="slock & loginctl suspend"
+alias mon="sudo /usr/bin/mongod --quiet --config /etc/mongodb.conf"
 #####/philo#####
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 export PS1="{\A}\[$(tput sgr0)\]"
+export _JAVA_AWT_WM_NONREPARENTING=1
 set -o vi
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias diff='diff --color=auto'
+alias ip='ip --color=auto'
 ################################################################################
 ##  FUNCTIONS                                                                 ##
 ################################################################################
@@ -342,7 +350,7 @@ bash_prompt() {
 	## BASH PROMT                                                             ##
 	## Generate promt and remove format from the rest                         ##
 	############################################################################
-	PS1="$TITLEBAR\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
+	PS1="┌──💀type a great promt$TITLEBAR\n└─${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
 
 	
 
@@ -369,10 +377,20 @@ PROMPT_COMMAND=bash_prompt_command
 ##	which gets updated by $PROMT_COMMAND on behalf of the terminal
 bash_prompt
 unset bash_prompt
-powerline-daemon -q
-POWERLINE_BASH_CONTINUATION=3
-POWERLINE_BASH_SELECT=3
-. /usr/share/powerline/bindings/bash/powerline.sh
+# powerline-daemon -q
+# POWERLINE_BASH_CONTINUATION=3
+# POWERLINE_BASH_SELECT=3
+# . /usr/share/powerline/bindings/bash/powerline.sh
+#
 
-
-### EOF ###
+## enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+## EOF ###

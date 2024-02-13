@@ -1,5 +1,5 @@
 local M = {}
-local servers = {'clangd','pylsp','html','cssls','jdtls','tsserver'}
+local servers = {'clangd','pylsp','html','cssls','jdtls','tsserver','rust_analyzer'}
 -- TODO: backfill this to template
 M.setup = function()
   local signs = {
@@ -67,6 +67,24 @@ require'lspconfig'.clangd.setup{
 	end,
 	capabilities = capabilities,
 }
+require'lspconfig'.rust_analyzer.setup{  assist = {
+                importEnforceGranularity = true,
+                importPrefix = 'crate',
+            },
+            cargo = {
+                allFeatures = true,
+            },
+            checkOnSave = {
+                command = 'clippy',
+            },
+            inlayHints = { locationLinks = false },
+            diagnostics = {
+                enable = true,
+                experimental = {
+                    enable = true,
+                },
+            },
+        }
 require'lspconfig'.pylsp.setup{}
 require'lspconfig'.tsserver.setup{}
 require'lspconfig'.jdtls.setup{} -- you should use atleast version 17 of jdk and install jdtls throw yay

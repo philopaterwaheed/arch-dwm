@@ -12,3 +12,4 @@ vim.opt.clipboard = "unnamed"		-- copies to the clipboard -- you should install 
 vim.opt.undofile = true
 --vim.opt.signcolumn = 'auto:2'
 vim.opt.cursorline  = true
+vim.opt.shiftwidth =4 ; 
