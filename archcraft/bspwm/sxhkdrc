@@ -31,7 +31,7 @@ super + semicolon
 	rofi_launcher
 
 # Rofi Run
-alt + F1
+super + shift + semicolon
 	rofi_runner
 
 # Rofi Menus/Applets
@@ -46,7 +46,7 @@ super + shift + {f,w,Return,e}
 
 # Terminal Apps
 ctrl + alt + {v,r,h}
-	alacritty --config-file ~/.config/bspwm/alacritty/alacritty.toml -e {vim,ranger,htop}
+	alacritty --config-file ~/.config/bspwm/alacritty/alacritty.toml -e {nvim,ranger,htop}
 
 # Color Picker
 super + p
@@ -149,7 +149,7 @@ super + alt + {Left,Right,Up,Down}
 	bspc node -z {left 20 0,right -20 0,top 0 20,bottom 0 -20}
 
 # Split horizontal, vertical or cancel
-super + {h,v,q}
+super + {h,v,c}
 	bspc node -p {east,south,cancel}
 
 # Preselect the ratio
