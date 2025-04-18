@@ -1,0 +1,19 @@
+[Added Associations]
+image/png=viewnior.desktop;
+image/jpeg=viewnior.desktop;
+image/gif=viewnior.desktop;
+image/svg+xml=viewnior.desktop;
+text/x-csrc=geany.desktop;
+text/plain=vim.desktop;userapp-nvim-DIRH22.desktop;geany.desktop;userapp-nvim %n-GDYK22.desktop;userapp-geany-I27J22.desktop;
+application/x-shellscript=geany.desktop;
+application/x-theme=geany.desktop;
+application/json=geany.desktop;
+application/x-zerosize=geany.desktop;userapp-nvim %n-GDYK22.desktop;
+
+[Default Applications]
+image/gif=viewnior.desktop
+image/svg+xml=viewnior.desktop
+text/plain=nvim.desktop
+application/x-zerosize=userapp-nvim %n-GDYK22.desktop
+
+[Removed Associations]
