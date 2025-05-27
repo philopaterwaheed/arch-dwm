@@ -12,9 +12,13 @@ alt + l
 super + t
 	bspterm
 
+#st terminal for less power consumption
+super + ctrl + t
+	bspterm --float
+
 # Terminal (floating)
 super + shift + t
-	bspterm --float
+	st
 
 # Terminal (fullscreen)
 super + alt + t
