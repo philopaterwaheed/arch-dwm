@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h>
-
+#include "colors.h"
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -13,21 +13,15 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10" };
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:size=10";
-static const char col_gray1[]       = "#4D4D4D"; // tages and xset root 
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#FF44C6";
-static const char col_gray4[]       = "#BD93F9"; // font color
-static const char col_cyan[]        = "#282A36";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
-
 static const char normmarkcolor[]   = "#FF44C6";	/*border color for marked client*/
 static const char selmarkcolor[]    = "#8BE9FD";	/*border color for marked client on focus*/
 
 static const char *colors[][4]      = {
-	/*               fg         bg         border     mark   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, normmarkcolor },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan,  selmarkcolor  },
+	/*            	 	fg      bg     border     mark   */
+	[SchemeNorm]       = { gray4,  black,  gray2 ,normmarkcolor },
+	[SchemeSel]        = { blue,  black,   blue  , selmarkcolor  },
 };
 static const unsigned int alphas[][4]      = {
     /*               fg      bg        border*/
@@ -46,7 +40,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "com-sun-tools-javac-launcher-Main",     NULL,       NULL,       0,            1,           -1 },
-  { "App_luncher",    NULL,       NULL,       0,            1,        -1 },
+        { "App_luncher",    NULL,       NULL,       0,            1,        -1 },
 };
 
 /* layout(s) */
@@ -94,7 +88,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[]  			= { "dmenu", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 //my commands 
@@ -108,6 +102,7 @@ static const char *s_shot[]= {"flameshot","gui",NULL };
 static const char *vol_up[] = {"/home/philosan/dwm/scripts/volume", "--inc" , NULL};
 static const char *vol_down[] = {"/home/philosan/dwm/scripts/volume", "--dec" , NULL};
 static const char *vol_mute[] =  {"/home/philosan/dwm/scripts/volume", "--toggle" , NULL};
+static const char *mic[] =  {"/home/philosan/dwm/scripts/volume", "--toggle-mic" , NULL};
 static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
 static const char *shutdown[]  = { "sudo", "poweroff", NULL };
 static const char *bridown[]  = {"/home/philosan/dwm/scripts/dwmbrightness" , "--dec",NULL};
@@ -196,6 +191,7 @@ static const Key keys[] = {
   { 0,                       XF86XK_AudioLowerVolume,  spawn,      {.v=vol_down} },
   { 0,                      XF86XK_AudioRaiseVolume,  spawn,      {.v=vol_up} }, 
   { 0,                      XF86XK_AudioMute,      spawn,      {.v = vol_mute } },
+  { 0, 						XF86XK_AudioMicMute, 		spawn, {.v = mic } },
   { MODKEY,                       XK_F5,        spawn,      {.v=reboot}},
   { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
   { 0,                       XF86XK_MonBrightnessUp,      spawn,      {.v=briup}},
