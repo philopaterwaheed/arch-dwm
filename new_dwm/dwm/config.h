@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
@@ -10,8 +11,8 @@ static const unsigned int gappov    = 1;       /* vert outer gap between windows
 static       int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10" };
+static const char dmenufont[]       = "JetBrainsMono Nerd Font:size=10";
 static const char col_gray1[]       = "#4D4D4D"; // tages and xset root 
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#FF44C6";
@@ -35,7 +36,7 @@ static const unsigned int alphas[][4]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "_", "", "", "", ""};
+static const char *tags[] = { "_", "", "", "", ""};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -97,25 +98,27 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 
 //my commands 
-static const char *qute[]  = {"qutebrowser",NULL};
+static const char *qute[]  = {"cachy-browser",NULL};
 static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
 static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
 static const char *dmenu_s [] = {"/home/philosan/dwm/dmenu_Hotcd.sh",NULL};
 static const char *vs_code[]= {"code",NULL };
 static const char *nvim[]= {"st", "-e", "nvim", NULL };
 static const char *s_shot[]= {"flameshot","gui",NULL };
-static const char *vol_up[] = {"amixer" ,"sset", "'Master'" , "5%+", NULL};
-static const char *vol_down[] = {"amixer" ,"sset", "'Master'" , "5%-", NULL};
-static const char *vol_mute[] = {"amixer -D pulse set Master 1+ toggle",NULL}; 
+static const char *vol_up[] = {"/home/philosan/dwm/scripts/volume", "--inc" , NULL};
+static const char *vol_down[] = {"/home/philosan/dwm/scripts/volume", "--dec" , NULL};
+static const char *vol_mute[] =  {"/home/philosan/dwm/scripts/volume", "--toggle" , NULL};
 static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
 static const char *shutdown[]  = { "sudo", "poweroff", NULL };
-static const char *bridown[]  = { "sudo", "brillo", "-q", "-U","5", NULL };
-static const char *briup[]  = { "sudo", "brillo", "-q", "-A","5", NULL };
+static const char *bridown[]  = {"/home/philosan/dwm/scripts/dwmbrightness" , "--dec",NULL};
+static const char *briup[]  = {"/home/philosan/dwm/scripts/dwmbrightness","--inc",NULL};
+static const char *rofi_runner[] = {"/home/philosan/dwm/scripts/rofi_runner",NULL};
+static const char *rofi_screenShot[] = {"/home/philosan/dwm/scripts/rofi_screenshot",NULL};
 
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_semicolon,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_semicolon,      spawn,          {.v = rofi_runner } },
 	{ MODKEY,                       XK_t,      spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -189,13 +192,14 @@ static const Key keys[] = {
   { MODKEY|ShiftMask,             XK_c,      spawn,       {.v=vs_code}},
   { MODKEY,                       XK_c,      spawn,       {.v=nvim}},
   { MODKEY,                       XK_Print,  spawn,      {.v = s_shot} },
-  { MODKEY,                       XK_minus,  spawn,      {.v=vol_down} },
-  { MODKEY,                       XK_equal,  spawn,      {.v=vol_up} }, 
-  { MODKEY,                       XK_m,      spawn,      {.v = vol_mute } },
+  { MODKEY|ShiftMask,                       XK_Print,  spawn,      {.v = rofi_screenShot} },
+  { 0,                       XF86XK_AudioLowerVolume,  spawn,      {.v=vol_down} },
+  { 0,                      XF86XK_AudioRaiseVolume,  spawn,      {.v=vol_up} }, 
+  { 0,                      XF86XK_AudioMute,      spawn,      {.v = vol_mute } },
   { MODKEY,                       XK_F5,        spawn,      {.v=reboot}},
   { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
-  { MODKEY,                       XK_F1,      spawn,      {.v=briup}},
-  { MODKEY,                       XK_F2,      spawn,      {.v=bridown}},
+  { 0,                       XF86XK_MonBrightnessUp,      spawn,      {.v=briup}},
+  { 0,                       XF86XK_MonBrightnessDown,      spawn,      {.v=bridown}},
   { MODKEY,                       XK_g,      spawn,      {.v=dmenu_s}},
 
 };

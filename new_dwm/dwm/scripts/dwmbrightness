@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+## Copyright (C) 2020-2025 Aditya Shakya <adi1090x@gmail.com>
+##
+## Script to manage brightness on Archcraft.
+
+# Icons
+iDIR='/home/philosan/dwm/icons/dunst'
+
+# Choose the proper brillo command — no need to check graphics card
+BR='brillo'
+
+# Get current brightness percentage (integer, rounded)
+get_backlight() {
+  BNESS=$($BR -G)
+  LIGHT=${BNESS%.*}
+  echo "${LIGHT}%"
+}
+
+# Select appropriate icon based on brightness level
+get_icon() {
+  local back=$(get_backlight)
+  local cur=${back%%%}
+  if (( cur <= 20 )); then icon="$iDIR/brightness-20.png"
+  elif (( cur <= 40 )); then icon="$iDIR/brightness-40.png"
+  elif (( cur <= 60 )); then icon="$iDIR/brightness-60.png"
+  elif (( cur <= 80 )); then icon="$iDIR/brightness-80.png"
+  else icon="$iDIR/brightness-100.png"; fi
+}
+
+# Send persistent notification via dunst
+notify_bl() {
+  get_icon
+  dunstify -u low -h string:x-dunst-stack-tag:obbacklight \
+    -i "$icon" "Brightness: $(get_backlight)"
+}
+
+# Increase brightness by 10% smoothly
+inc_backlight() {
+  pkexec $BR -u 150000 -A 10 && notify_bl
+}
+
+# Decrease brightness by 10% smoothly
+dec_backlight() {
+  pkexec $BR -u 150000 -U 10 && notify_bl
+}
+
+# Main execution logic
+case "$1" in
+  --get) get_backlight ;;
+  --inc) inc_backlight ;;
+  --dec) dec_backlight ;;
+  *) get_backlight ;;
+esac
+

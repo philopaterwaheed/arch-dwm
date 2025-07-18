@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
+
+# Import Current Theme
+DIR="/home/philosan/dwm/theme/rofi/"
+STYLE="adaptive"
+RASI="$DIR/runner.rasi"
+
+# Run
+rofi \
+    -show run \
+	-theme ${RASI}
+
