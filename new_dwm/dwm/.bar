@@ -21,7 +21,7 @@ cpu() {
   read cpu a b c idle rest < /proc/stat
   total=$((a+b+c+idle))
   cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
-  echo -e " : $cpu%"
+  echo -e " : $cpu% "
 }
 ##heat
 heat()
@@ -37,9 +37,34 @@ vol() {
     echo -e ": $vol"
 }
 battt() {
-	batt=$(acpi -b | grep -P -o '[0-9]+(?=%)')
-	ch=$(acpi -b |grep -c "Discharging")
-    echo -e " : $batt $ch"
+    batt=$(acpi -b | grep -P -o '[0-9]+(?=%)')
+    ch=$(acpi -b | grep -c "Discharging")
+    
+    # Set emoji based on battery percentage
+    if [[ ("$batt" -ge "0") && ("$batt" -le "20") ]]; then
+	    emoji=""
+    elif [[ ("$batt" -ge "20") && ("$batt" -le "40") ]]; then
+	    emoji=""
+    elif [[ ("$batt" -ge "40") && ("$batt" -le "60") ]]; then
+	    emoji=""
+    elif [[ ("$batt" -ge "60") && ("$batt" -le "80") ]]; then
+	    emoji=""
+    elif [[ ("$batt" -ge "80") && ("$batt" -le "100") ]]; then
+	    emoji=""
+    fi
+    
+    # Add charging indicator if not discharging
+    if [ "$ch" -eq 0 ]; then
+        emoji="⚡ $emoji"  # Charging
+    fi
+    
+    echo -e "$emoji: $batt%"
+}
+wlan() {
+	case "$(cat /sys/class/net/w*/operstate 2>/dev/null)" in
+		up) printf "  Connected" ;;
+		down) printf "Disconnected" ;;
+	esac
 }
 
 SLEEP_SEC=3
@@ -50,6 +75,6 @@ SLEEP_SEC=3
 # So I would love to add more functions to this script but it makes the 
 # echo output too long to display correctly.
 while true; do
-	xsetroot -name  "$(battt) | $(heat) | $(cpu)| $(mem) | $(hdd) |  :$(date) | $(vol) "
+    xsetroot -name  "$(battt) | $(heat) | $(cpu)| $(mem) | $(hdd) |  :$(date) | $(wlan) | $(vol) "
 	sleep $SLEEP_SEC
 done
