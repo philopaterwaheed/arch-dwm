@@ -108,12 +108,14 @@ static const char *shutdown[]  = { "sudo", "poweroff", NULL };
 static const char *bridown[]  = {"/home/philosan/dwm/scripts/dwmbrightness" , "--dec",NULL};
 static const char *briup[]  = {"/home/philosan/dwm/scripts/dwmbrightness","--inc",NULL};
 static const char *rofi_runner[] = {"/home/philosan/dwm/scripts/rofi_runner",NULL};
+static const char *rofi_launcher[] = {"/home/philosan/dwm/scripts/rofi_launcher",NULL};
 static const char *rofi_screenShot[] = {"/home/philosan/dwm/scripts/rofi_screenshot",NULL};
 
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_semicolon,      spawn,          {.v = rofi_runner } },
+	{ MODKEY,                       XK_semicolon,      spawn,          {.v = rofi_launcher } },
+	{ MODKEY|ShiftMask,                       XK_semicolon,      spawn,          {.v = rofi_runner } },
 	{ MODKEY,                       XK_t,      spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

@@ -1,0 +1,44 @@
+#include <filesystem>
++++++++++++++++++++++++++++++++++++++++++++++++
+removed
++++++++++++++++++++++++++++++++++++++++++++++++
+dolphin
+firefox
+amd-ucode
+micro
+kate
++++++++++++++++++++++++++++++++++++++++++++++++
+installed
++++++++++++++++++++++++++++++++++++++++++++++++
+picom
+xclip
+xfce-power-manager
+xfce-polkit
+bc
+yay
+lazygit
+nodejs
+cargo
+ttf-jetbrains-mono
+ttf-jetbrains-mono-nerd
+awesome font
+flameshot
+maim
+xdotool
+brillo
+xsetroot
+acpi
+xbacklight
++++++++++++++++++++++++++++++++++++++++++++++++
+crafty install
++++++++++++++++++++++++++++++++++++++++++++++++
+st
+my dwm
+++++++++++++++++++++++++++++++++++++++++++++++
+dos
+++++++++++++++++++++++++++++++++++++++++++++++
+put the rofi crafty config
+put the picom crafty config
+add archcraft font
+
+
