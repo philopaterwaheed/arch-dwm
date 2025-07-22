@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Philo Startpage</title>
+      <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7ieK1uKjX2ppZFtKxP+fU5R4e7bK9U5HZP0N5Ao8yE1+q1aPYYz7uGZBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <style>
+         * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         }
+         body {
+         background: #000;
+         color: #fff;
+         font-family: 'Press Start 2P', monospace;
+         min-height: 100vh;
+         padding: 20px;
+         }
+         .container {
+         max-width: 1200px;
+         margin: 0 auto;
+         }
+         .header {
+         text-align: center;
+         margin-bottom: 30px;
+         position: relative;
+         }
+         .title {
+         font-size: 24px;
+         color: #fff;
+         margin-bottom: 10px;
+         }
+         .subtitle {
+         font-size: 10px;
+         color: #888;
+         }
+         /* Clock Section */
+         .clock {
+         position: absolute;
+         top: 0;
+         right: 0;
+         text-align: right;
+         }
+         .time {
+         font-size: 16px;
+         color: #fff;
+         margin-bottom: 5px;
+         }
+         .date {
+         font-size: 8px;
+         color: #888;
+         }
+         /* Search Section */
+         .search-section {
+         background: #111;
+         border: 1px solid #333;
+         padding: 20px;
+         margin-bottom: 30px;
+         }
+         .search-form {
+         display: flex;
+         gap: 10px;
+         justify-content: center;
+         align-items: center;
+         }
+         .search-input {
+         flex: 1;
+         max-width: 400px;
+         padding: 10px;
+         background: #000;
+         border: 1px solid #666;
+         color: #fff;
+         font-family: 'Press Start 2P', monospace;
+         font-size: 10px;
+         outline: none;
+         }
+         .search-input:focus {
+         border-color: #fff;
+         }
+         .search-btn {
+         padding: 10px 15px;
+         background: #333;
+         border: 1px solid #666;
+         color: #fff;
+         font-family: 'Press Start 2P', monospace;
+         font-size: 8px;
+         cursor: pointer;
+         }
+         .search-btn:hover {
+         background: #555;
+         }
+         /* Selection Area */
+         .selection-area {
+	 position:relative;
+         display: grid;
+         grid-template-columns: 1fr 250px;
+         gap: 20px;
+         }
+         .categories-container {
+         display: flex;
+         flex-direction: column;
+         gap: 20px;
+         }
+         .category {
+         background: #111;
+         border: 1px solid #333;
+         padding: 15px;
+         }
+         .category-title {
+         font-size: 10px;
+         color: #fff;
+         margin-bottom: 15px;
+         text-transform: uppercase;
+         border-bottom: 1px solid #333;
+         padding-bottom: 5px;
+         }
+         .pages-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+         gap: 8px;
+         }
+         .page-item {
+         background: #000;
+         border: 1px solid #444;
+         padding: 12px;
+         cursor: pointer;
+         transition: all 0.2s ease;
+         position: relative;
+         }
+         .page-item:hover {
+         border-color: #666;
+         background: #222;
+         }
+         .page-item.selected {
+         border-color: #fff;
+         background: #333;
+         }
+         .page-item.selected::before {
+         content: '►';
+         position: absolute;
+         left: -15px;
+         top: 50%;
+         transform: translateY(-50%);
+         color: #fff;
+         font-size: 8px;
+         }
+         .page-name {
+         font-size: 9px;
+         color: #fff;
+         margin-bottom: 6px;
+         }
+         .page-url {
+         font-size: 7px;
+         color: #666;
+         word-break: break-all;
+         }
+	.character-display {
+	position: sticky;       
+	top: 20px;           
+	width: 250px;
+	background: #111;
+	border: 1px solid #333;
+	padding: 20px;
+	text-align: center;
+	z-index: 100;
+	align-self: flex-start;
+	}
+         .character-display-title {
+         font-size: 10px;
+         color: #888;
+         margin-bottom: 20px;
+         text-transform: uppercase;
+         }
+         .character-icon {
+         width: 100px;
+         height: 100px;
+         margin: 0 auto 20px;
+         background: #000;
+         border: 1px solid #333;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 40px;
+         color: #fff;
+         }
+         .character-name {
+         font-size: 12px;
+         color: #fff;
+         margin-bottom: 10px;
+         }
+         .character-category {
+         font-size: 8px;
+         color: #666;
+         margin-bottom: 15px;
+         text-transform: uppercase;
+         }
+         .character-stats {
+         font-size: 8px;
+         color: #888;
+         line-height: 1.5;
+         }
+         .instructions {
+         margin-top: 30px;
+         text-align: center;
+         font-size: 8px;
+         color: #666;
+         line-height: 1.5;
+         }
+         .page-item.hovered {
+         border-color: #888;
+         background: #222;
+         }
+         /* Responsive design */
+         @media (max-width: 768px) {
+         .selection-area {
+         grid-template-columns: 1fr;
+         }
+         .title {
+         font-size: 18px;
+         }
+         .character-display {
+         order: -1;
+         }
+         .pages-grid {
+         grid-template-columns: 1fr 1fr;
+         }
+         .clock {
+         position: static;
+         text-align: center;
+         margin-bottom: 15px;
+         }
+         }
+         @media (max-width: 480px) {
+         .pages-grid {
+         grid-template-columns: 1fr;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <header class="header">
+            <div class="clock">
+               <div class="time" id="time"></div>
+               <div class="date" id="date"></div>
+            </div>
+            <h1 class="title">PHILO PORTAL</h1>
+            <p class="subtitle">Navigate with keyboard or mouse</p>
+         </header>
+         <section class="search-section">
+            <form class="search-form" action="https://duckduckgo.com/" method="get">
+               <input type="text" name="q" class="search-input" placeholder="Search the web..." autocomplete="off">
+               <button type="submit" class="search-btn">SEARCH</button>
+            </form>
+         </section>
+         <section class="selection-area">
+            <div class="categories-container" id="categoriesContainer">
+            </div>
+            <div class="character-display">
+               <div class="character-display-title">Selected Site</div>
+               <div class="character-icon" id="characterIcon">?</div>
+               <div class="character-name" id="characterName">SELECT A SITE</div>
+               <div class="character-category" id="characterCategory"></div>
+               <div class="character-stats" id="characterStats">
+                  Use arrow keys to navigate<br>
+                  Press ENTER or click to visit<br>
+                  ESC to deselect
+               </div>
+            </div>
+         </section>
+         <div class="instructions">
+            ← → Navigate within category | ↑ ↓ Jump between categories | ENTER Launch/Search | ESC Deselect | / Focus search
+         </div>
+      </div>
+      <script>
+         // Clock functionality
+         function updateClock() {
+             const now = new Date();
+             const timeString = now.toLocaleTimeString('en-US', { 
+                 hour12: false,
+                 hour: '2-digit',
+                 minute: '2-digit',
+                 second: '2-digit'
+             });
+             const dateString = now.toLocaleDateString('en-US', {
+                 weekday: 'short',
+                 year: 'numeric',
+                 month: 'short',
+                 day: 'numeric'
+             });
+             
+             document.getElementById('time').textContent = timeString;
+             document.getElementById('date').textContent = dateString;
+         }
+         
+         // Update clock every second
+         setInterval(updateClock, 1000);
+         updateClock(); // Initial call
+         
+         // Categorized saved pages
+	const categories = {	
+	  'Communication & Social': [
+	    { name: 'WhatsApp', url: 'https://web.whatsapp.com', icon: '💬', stats: 'Messaging\nVoice & Video Calls\nGroup Chats' },
+	    { name: 'Facebook', url: 'https://facebook.com', icon: '👥', stats: 'Social Media\nGroups & Pages\nNews Feed' },
+	    { name: 'YouTube', url: 'https://youtube.com', icon: '📺', stats: 'Video Sharing\nEntertainment\nLearning' },
+	    { name: 'Telegram', url: 'https://web.telegram.org', icon: '✈️', stats: 'Encrypted Chat\nChannels\nBots' },
+	    { name: 'Discord', url: 'https://discord.com', icon: '🎧', stats: 'Voice & Text Chat\nCommunities\nGaming' },
+	    { name: 'Instagram', url: 'https://instagram.com', icon: '📸', stats: 'Photos\nStories\nSocial Sharing' },
+	    { name: 'Reddit', url: 'https://reddit.com', icon: '👽', stats: 'Forums\nDiscussions\nInterest Communities' }
+	  ],
+
+	  'AI': [
+	    { name: 'ChatGPT', url: 'https://chat.openai.com', icon: '🤖', stats: 'AI Chatbot\nCode Help\nResearch Assistant' },
+	    { name: 'Claude', url: 'https://claude.ai', icon: '🌞', stats: 'AI Assistant\nWriting & Coding\nAnthropic AI' },
+	    { name: 'GitHub Copilot', url: 'https://github.com/features/copilot', icon: '🧑‍✈️', stats: 'AI Pair Programmer\nCode Suggestions\nVSCode Integration' }
+	  ],
+
+	  'Development Platforms': [
+	    { name: 'GitHub', url: 'https://github.com', icon: '🐱', stats: 'Code Repository\nVersion Control\nOpen Source' },
+	    { name: 'GitHub Codespaces', url: 'https://github.com/codespaces', icon: '🖥️', stats: 'Cloud IDE\nDevelopment Environments\nVSCode in Browser' },
+	    { name: 'firebase studio', url: 'https://studio.firebase.google.com/', icon: '🔥', stats: 'Cloud IDE\nDevelopment Environments\nVSCode in Browser' },
+	    { name: 'LeetCode', url: 'https://leetcode.com', icon: '🧩', stats: 'Coding Challenges\nInterview Prep\nDSA Practice' },
+	    { name: 'codeforces', url: 'https://codeforces.com', icon: '🏆', stats: 'Competitive Programming\nContests\nProblem Solving' },
+	    { name: 'Figma', url: 'https://figma.com', icon: '🎨', stats: 'UI/UX Design\nPrototyping\nCollaboration' }
+	  ],
+
+	  'Cloud & Deployment': [
+	    { name: 'Firebase Console', url: 'https://console.firebase.google.com', icon: '🔥', stats: 'App Backend\nRealtime DB\nAuth & Hosting' },
+	    { name: 'Firebase Storage', url: 'https://console.firebase.google.com/storage', icon: '💾', stats: 'Cloud File Storage\nMedia Hosting\nGoogle Cloud' },
+	    { name: 'Google Cloud Console', url: 'https://console.cloud.google.com', icon: '☁️', stats: 'Cloud Infrastructure\nCompute, Storage\nGoogle Services' },
+	    { name: 'Azure', url: 'https://portal.azure.com', icon: '🔷', stats: 'Microsoft Cloud\nVMs\nApp Services' },
+	    { name: 'Vercel', url: 'https://vercel.com', icon: '🚀', stats: 'Frontend Hosting\nNext.js\nCI/CD & Deployments' }
+	  ],
+
+	  'Google Workspace': [
+	    { name: 'Gmail', url: 'https://gmail.com', icon: '✉️', stats: 'Email Service\nGoogle Integration\nSecure Mail' },
+	    { name: 'Google Sheets', url: 'https://sheets.google.com', icon: '📊', stats: 'Spreadsheets\nData Analysis\nCollaboration' },
+	    { name: 'Google Drive', url: 'https://drive.google.com', icon: '📁', stats: 'Cloud Storage\nFile Sharing\nDocs & Backup' },
+	    { name: 'Google Classroom', url: 'https://classroom.google.com', icon: '🏫', stats: 'Education Tool\nAssignments\nTeacher Collaboration' }
+	  ]
+	};
+
+         
+         let selectedIndex = -1;
+         let allPages = [];
+         let pageElements = [];
+         
+         function createCategoryElements() {
+             const container = document.getElementById('categoriesContainer');
+             let pageIndex = 0;
+             
+             Object.entries(categories).forEach(([categoryName, pages]) => {
+                 const categoryDiv = document.createElement('div');
+                 categoryDiv.className = 'category';
+                 
+                 const titleDiv = document.createElement('div');
+                 titleDiv.className = 'category-title';
+                 titleDiv.textContent = categoryName;
+                 categoryDiv.appendChild(titleDiv);
+                 
+                 const pagesGrid = document.createElement('div');
+                 pagesGrid.className = 'pages-grid';
+                 
+         pages.forEach((page, pageIndex) => {
+                     const pageElement = document.createElement('div');
+                     pageElement.className = 'page-item';
+                     pageElement.dataset.index = pageIndex;
+                     
+                     pageElement.innerHTML = `
+                         <div class="page-name">${page.name}</div>
+                         <div class="page-url">${page.url}</div>
+                     `;
+                     
+         // Preview on hover without modifying selectedIndex
+         pageElement.addEventListener('mouseenter', () => {
+             updateCharacterDisplay({ ...page, category: page.category });
+             pageElement.classList.add('hovered');
+         });
+         pageElement.addEventListener('mouseleave', () => {
+             pageElement.classList.remove('hovered');
+             // restore the real selection display (or blank if none)
+             if (selectedIndex >= 0) {
+                 updateCharacterDisplay(allPages[selectedIndex]);
+             } else {
+                 updateCharacterDisplay(null);
+             }
+         });
+         pageElement.addEventListener('click', (e) => {
+         e.stopPropagation();
+         window.location.href = page.url;
+         });
+                     
+                     pageElements.push(pageElement);
+                     allPages.push({ ...page, category: categoryName });
+                     pagesGrid.appendChild(pageElement);
+                     pageIndex++;
+                 });
+                 
+                 categoryDiv.appendChild(pagesGrid);
+                 container.appendChild(categoryDiv);
+             });
+         }
+         
+         function selectPage(index) {
+             // Remove previous selection
+             pageElements.forEach(item => item.classList.remove('selected'));
+             
+             selectedIndex = index;
+             
+             if (index >= 0 && index < allPages.length) {
+                 // Add selection to current item
+                 pageElements[index].classList.add('selected');
+                 updateCharacterDisplay(allPages[index]);
+                 
+                 // Scroll selected item into view
+                 pageElements[index].scrollIntoView({ 
+                     behavior: 'smooth', 
+                     block: 'nearest' 
+                 });
+             } else {
+                 updateCharacterDisplay(null);
+             }
+         }
+         
+         function updateCharacterDisplay(page) {
+             const iconEl = document.getElementById('characterIcon');
+             const nameEl = document.getElementById('characterName');
+             const categoryEl = document.getElementById('characterCategory');
+             const statsEl = document.getElementById('characterStats');
+             
+             if (page) {
+                 iconEl.textContent = page.icon;
+                 nameEl.textContent = page.name;
+                 categoryEl.textContent = page.category;
+                 statsEl.innerHTML = page.stats.replace(/\n/g, '<br>');
+             } else {
+                 iconEl.textContent = '?';
+                 nameEl.textContent = 'SELECT A SITE';
+                 categoryEl.textContent = '';
+                 statsEl.innerHTML = 'Use arrow keys to navigate<br>Press ENTER or click to visit<br>ESC to deselect';
+             }
+         }
+         
+         function launchSite() {
+             if (selectedIndex >= 0 && selectedIndex < allPages.length) {
+                 window.location.href = allPages[selectedIndex].url;
+             }
+         }
+         
+         function navigate(direction) {
+             let newIndex = selectedIndex;
+             
+             switch(direction) {
+                 case 'right':
+                     if (selectedIndex === -1) {
+                         newIndex = 0;
+                     } else {
+                         // Move to next item in same row/category
+                         const currentCategory = allPages[selectedIndex].category;
+                         const currentCategoryPages = allPages.filter(p => p.category === currentCategory);
+                         const currentIndexInCategory = currentCategoryPages.findIndex(p => p === allPages[selectedIndex]);
+                         
+                         if (currentIndexInCategory < currentCategoryPages.length - 1) {
+                             // Move to next item in same category
+                             const nextPageInCategory = currentCategoryPages[currentIndexInCategory + 1];
+                             newIndex = allPages.findIndex(p => p === nextPageInCategory);
+                         } else {
+                             // Move to first item of next category
+                             const categoryNames = Object.keys(categories);
+                             const currentCategoryIndex = categoryNames.indexOf(currentCategory);
+                             const nextCategoryIndex = (currentCategoryIndex + 1) % categoryNames.length;
+                             const nextCategoryName = categoryNames[nextCategoryIndex];
+                             newIndex = allPages.findIndex(p => p.category === nextCategoryName);
+                         }
+                     }
+                     break;
+                 case 'left':
+                     if (selectedIndex === -1) {
+                         newIndex = allPages.length - 1;
+                     } else {
+                         // Move to previous item in same row/category
+                         const currentCategory = allPages[selectedIndex].category;
+                         const currentCategoryPages = allPages.filter(p => p.category === currentCategory);
+                         const currentIndexInCategory = currentCategoryPages.findIndex(p => p === allPages[selectedIndex]);
+                         
+                         if (currentIndexInCategory > 0) {
+                             // Move to previous item in same category
+                             const prevPageInCategory = currentCategoryPages[currentIndexInCategory - 1];
+                             newIndex = allPages.findIndex(p => p === prevPageInCategory);
+                         } else {
+                             // Move to last item of previous category
+                             const categoryNames = Object.keys(categories);
+                             const currentCategoryIndex = categoryNames.indexOf(currentCategory);
+                             const prevCategoryIndex = currentCategoryIndex === 0 ? categoryNames.length - 1 : currentCategoryIndex - 1;
+                             const prevCategoryName = categoryNames[prevCategoryIndex];
+                             const prevCategoryPages = allPages.filter(p => p.category === prevCategoryName);
+                             const lastPageInPrevCategory = prevCategoryPages[prevCategoryPages.length - 1];
+                             newIndex = allPages.findIndex(p => p === lastPageInPrevCategory);
+                         }
+                     }
+                     break;
+                 case 'down':
+                     if (selectedIndex === -1) {
+                         newIndex = 0;
+                     } else {
+                         // Move to next category
+                         const currentCategory = allPages[selectedIndex].category;
+                         const categoryNames = Object.keys(categories);
+                         const currentCategoryIndex = categoryNames.indexOf(currentCategory);
+                         const nextCategoryIndex = (currentCategoryIndex + 1) % categoryNames.length;
+                         const nextCategoryName = categoryNames[nextCategoryIndex];
+                         
+                         // Find first item in next category
+                         newIndex = allPages.findIndex(p => p.category === nextCategoryName);
+                     }
+                     break;
+                 case 'up':
+                     if (selectedIndex === -1) {
+                         newIndex = allPages.length - 1;
+                     } else {
+                         // Move to previous category
+                         const currentCategory = allPages[selectedIndex].category;
+                         const categoryNames = Object.keys(categories);
+                         const currentCategoryIndex = categoryNames.indexOf(currentCategory);
+                         const prevCategoryIndex = currentCategoryIndex === 0 ? categoryNames.length - 1 : currentCategoryIndex - 1;
+                         const prevCategoryName = categoryNames[prevCategoryIndex];
+                         
+                         // Find first item in previous category
+                         newIndex = allPages.findIndex(p => p.category === prevCategoryName);
+                     }
+                     break;
+             }
+             
+             selectPage(newIndex);
+         }
+         
+         // Initialize the page
+         document.addEventListener('DOMContentLoaded', function() {
+             createCategoryElements();
+             
+             // Keyboard navigation
+             document.addEventListener('keydown', function(e) {
+                 const searchInput = document.querySelector('.search-input');
+                 const isSearchFocused = document.activeElement === searchInput;
+                 
+                 switch(e.key) {
+                     case 'Enter':
+                         if (isSearchFocused && searchInput.value.trim()) {
+                             // If search has text and is focused, submit search
+                             document.querySelector('.search-form').submit();
+                         } else if (selectedIndex >= 0) {
+                             // If a site is selected, launch it
+                             launchSite();
+                         }
+                         e.preventDefault();
+                         break;
+                     case 'Escape':
+                         if (selectedIndex >= 0) {
+                             // Deselect if something is selected
+                             selectPage(-1);
+                         } else if (isSearchFocused) {
+                             // Blur search input if focused
+                             searchInput.blur();
+                         }
+                         e.preventDefault();
+                         break;
+                     case 'ArrowRight':
+                         if (!isSearchFocused) {
+                             navigate('right');
+                             e.preventDefault();
+                         }
+                         break;
+                     case 'ArrowLeft':
+                         if (!isSearchFocused) {
+                             navigate('left');
+                             e.preventDefault();
+                         }
+                         break;
+                     case 'ArrowDown':
+                         if (!isSearchFocused) {
+                             navigate('down');
+                             e.preventDefault();
+                         }
+                         break;
+                     case 'ArrowUp':
+                         if (!isSearchFocused) {
+                             navigate('up');
+                             e.preventDefault();
+                         }
+                         break;
+                     case '/':
+                         // Quick focus search with /
+                         if (!isSearchFocused) {
+                             searchInput.focus();
+                             e.preventDefault();
+                         }
+                         break;
+                 }
+             });
+             
+             // Focus search input on page load
+             document.querySelector('.search-input').focus();
+         });
+      </script>
+   </body>
+</html>
