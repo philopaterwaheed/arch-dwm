@@ -92,7 +92,7 @@ static const char *dmenucmd[]  			= { "dmenu", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 //my commands 
-static const char *qute[]  = {"cachy-browser",NULL};
+static const char *qute[]  = {"librewolf",NULL};
 static const char *lay_change[] = {"/home/philosan/dwm/layout.sh",NULL};
 static const char *Monitor_set [] = {"/home/philosan/dwm/monitor.sh",NULL};
 static const char *dmenu_s [] = {"/home/philosan/dwm/dmenu_Hotcd.sh",NULL};
@@ -103,8 +103,8 @@ static const char *vol_up[] = {"/home/philosan/dwm/scripts/volume", "--inc" , NU
 static const char *vol_down[] = {"/home/philosan/dwm/scripts/volume", "--dec" , NULL};
 static const char *vol_mute[] =  {"/home/philosan/dwm/scripts/volume", "--toggle" , NULL};
 static const char *mic[] =  {"/home/philosan/dwm/scripts/volume", "--toggle-mic" , NULL};
-static const char *reboot[]  = { "sudo", "shutdown", "-r", "+0", NULL };
-static const char *shutdown[]  = { "sudo", "poweroff", NULL };
+static const char *reboot[]  = {"reboot" , NULL };
+static const char *shutdown[]  = { "poweroff", NULL };
 static const char *bridown[]  = {"/home/philosan/dwm/scripts/dwmbrightness" , "--dec",NULL};
 static const char *briup[]  = {"/home/philosan/dwm/scripts/dwmbrightness","--inc",NULL};
 static const char *rofi_runner[] = {"/home/philosan/dwm/scripts/rofi_runner",NULL};

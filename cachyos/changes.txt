@@ -1,4 +1,3 @@
-#include <filesystem>
 +++++++++++++++++++++++++++++++++++++++++++++++
 removed
 +++++++++++++++++++++++++++++++++++++++++++++++
@@ -29,6 +28,8 @@ brillo
 xsetroot
 acpi
 xbacklight
+blueman
+slock
 +++++++++++++++++++++++++++++++++++++++++++++++
 crafty install
 +++++++++++++++++++++++++++++++++++++++++++++++
@@ -40,5 +41,3 @@ dos
 put the rofi crafty config
 put the picom crafty config
 add archcraft font
-
-
