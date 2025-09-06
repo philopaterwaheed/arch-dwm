@@ -145,14 +145,6 @@ local plugins = {
     -- Treesitter
   "nvim-treesitter/nvim-treesitter" ,
 
-{"nvim-treesitter/nvim-treesitter-context",
-    config = function()
-   	  require("philo.context").setup()
-   	end,
-	lazy = true,
-    event = "BufReadPre",
-    	dependencies = { "nvim-treesitter/nvim-treesitter" },
-   },
 
 
   -- LSP
