@@ -134,7 +134,8 @@ local plugins = {
 
    -- Colorschemes
   -- use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
-  "folke/tokyonight.nvim" , 
+  --[[ "folke/tokyonight.nvim" ,  ]]
+  "dasupradyumna/midnight.nvim" , 
   {"lunarvim/darkplus.nvim", lazy = true,},
   {"navarasu/onedark.nvim",lazy = true,} , 
   {"nvim-lualine/lualine.nvim",lazy = true,},
@@ -143,7 +144,7 @@ local plugins = {
   --
     -- Treesitter
   "nvim-treesitter/nvim-treesitter" ,
-  -- snippets
+
 
 
   -- LSP
