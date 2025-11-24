@@ -1,7 +1,8 @@
 +++++++++++++++++++++++++++++++++++++++++++++++
 removed
 +++++++++++++++++++++++++++++++++++++++++++++++
-dolphin
+linux-firmware-amdgpu
+linux-firmware-radeon
 firefox
 amd-ucode
 micro
@@ -30,6 +31,8 @@ acpi
 xbacklight
 blueman
 slock
+lxappearance
+ntfs-3g
 +++++++++++++++++++++++++++++++++++++++++++++++
 crafty install
 +++++++++++++++++++++++++++++++++++++++++++++++
@@ -41,3 +44,4 @@ dos
 put the rofi crafty config
 put the picom crafty config
 add archcraft font
+change the cursor in lxappearance
