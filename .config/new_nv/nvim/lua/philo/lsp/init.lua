@@ -4,5 +4,5 @@ if not status_ok then
 end
 
 require "philo.lsp.mason"
-require("philo.lsp.handlers").setup()
+require("philo.lsp.handlers")
 require "philo.lsp.conform"
