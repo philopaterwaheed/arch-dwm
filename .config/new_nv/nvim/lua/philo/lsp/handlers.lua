@@ -67,8 +67,12 @@ local function lsp_highlight_document(client, bufnr)
     vim.api.nvim_create_autocmd("ModeChanged", {
       group = group,
       buffer = bufnr,
-      pattern = "*:[vV\x16]*",
-      callback = vim.lsp.buf.clear_references,
+      callback = function()
+        local mode = vim.fn.mode()
+        if mode:match("[vV\x16]") then
+          vim.lsp.buf.clear_references()
+        end
+      end,
     })
   end
 end
