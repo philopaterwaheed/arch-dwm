@@ -14,7 +14,7 @@ M.setup = function()
   end
 
   copilot.setup({
-    -- Disable built-in suggestion/panel (using copilot-cmp instead)
+    -- Disable built-in inline suggestions/panel (using copilot-cmp instead)
     suggestion = { enabled = false },
     panel = { enabled = false },
     -- Disable for certain filetypes

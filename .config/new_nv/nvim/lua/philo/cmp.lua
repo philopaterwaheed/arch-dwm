@@ -116,7 +116,7 @@ M.setup = function()
     },
 
     experimental = {
-      ghost_text = true, -- Show ghost text preview
+      ghost_text = false, -- Disable inline completion preview
     },
   })
 
