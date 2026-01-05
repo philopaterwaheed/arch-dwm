@@ -142,3 +142,206 @@ end
 -- Export for nvim-tree setup
 _G.nvim_tree_on_attach = nvim_tree_on_attach
 
+-------------------------------------------------------------------------------
+-- PRODUCTIVITY ENHANCEMENTS
+-- Additional shortcuts for faster editing and navigation
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- Quick Save & Quit
+-------------------------------------------------------------------------------
+map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+map("n", "<leader>W", "<cmd>wa<cr>", { desc = "Save all files" })
+map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit window" })
+map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit all" })
+
+-------------------------------------------------------------------------------
+-- Line Manipulation (Normal Mode)
+-------------------------------------------------------------------------------
+-- Move lines up/down (Alt+j/k)
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
+
+-- Duplicate line
+map("n", "<leader>d", "<cmd>t.<cr>", { desc = "Duplicate line" })
+
+-- Add blank lines without entering insert mode
+map("n", "<leader>o", "o<Esc>", { desc = "Add blank line below" })
+map("n", "<leader>O", "O<Esc>", { desc = "Add blank line above" })
+
+-------------------------------------------------------------------------------
+-- Line Manipulation (Visual Mode)
+-------------------------------------------------------------------------------
+-- Move selected lines up/down (Alt+j/k)
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+
+-- Duplicate selection
+map("v", "<leader>d", "y'>p", { desc = "Duplicate selection" })
+
+-------------------------------------------------------------------------------
+-- Insert Mode Enhancements
+-------------------------------------------------------------------------------
+-- Quick escape alternatives
+map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
+map("i", "kj", "<Esc>", { desc = "Exit insert mode" })
+
+-- Move cursor in insert mode (Ctrl + h/j/k/l)
+map("i", "<C-h>", "<Left>", { desc = "Move cursor left" })
+map("i", "<C-l>", "<Right>", { desc = "Move cursor right" })
+map("i", "<C-j>", "<Down>", { desc = "Move cursor down" })
+map("i", "<C-k>", "<Up>", { desc = "Move cursor up" })
+
+-- Delete word backward (Ctrl+Backspace behavior)
+map("i", "<C-BS>", "<C-w>", { desc = "Delete word backward" })
+map("i", "<C-Del>", "<C-o>dw", { desc = "Delete word forward" })
+
+-- Undo break points (create undo points at punctuation)
+map("i", ",", ",<C-g>u", { desc = "Undo break point" })
+map("i", ".", ".<C-g>u", { desc = "Undo break point" })
+map("i", ";", ";<C-g>u", { desc = "Undo break point" })
+
+-------------------------------------------------------------------------------
+-- Window Splits (Quick creation)
+-------------------------------------------------------------------------------
+map("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "Split vertical" })
+map("n", "<leader>sh", "<cmd>split<cr>", { desc = "Split horizontal" })
+map("n", "<leader>se", "<C-w>=", { desc = "Equal window sizes" })
+map("n", "<leader>sx", "<cmd>close<cr>", { desc = "Close current split" })
+
+-------------------------------------------------------------------------------
+-- Buffer Management (Enhanced)
+-------------------------------------------------------------------------------
+-- Quick buffer switching by number (bufferline ordinal)
+map("n", "<leader>1", "<cmd>BufferLineGoToBuffer 1<cr>", { desc = "Go to buffer 1" })
+map("n", "<leader>2", "<cmd>BufferLineGoToBuffer 2<cr>", { desc = "Go to buffer 2" })
+map("n", "<leader>3", "<cmd>BufferLineGoToBuffer 3<cr>", { desc = "Go to buffer 3" })
+map("n", "<leader>4", "<cmd>BufferLineGoToBuffer 4<cr>", { desc = "Go to buffer 4" })
+map("n", "<leader>5", "<cmd>BufferLineGoToBuffer 5<cr>", { desc = "Go to buffer 5" })
+map("n", "<leader>6", "<cmd>BufferLineGoToBuffer 6<cr>", { desc = "Go to buffer 6" })
+map("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<cr>", { desc = "Go to buffer 7" })
+map("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<cr>", { desc = "Go to buffer 8" })
+map("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<cr>", { desc = "Go to buffer 9" })
+
+-- Close other buffers
+map("n", "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", { desc = "Close other buffers" })
+map("n", "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", { desc = "Close buffers to the left" })
+map("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>", { desc = "Close buffers to the right" })
+map("n", "<leader>bp", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+
+-------------------------------------------------------------------------------
+-- Enhanced Search & Replace
+-------------------------------------------------------------------------------
+-- Clear search highlight
+map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
+
+-- Search and replace word under cursor
+map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
+
+-- Search for visual selection
+map("v", "//", [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], { desc = "Search for selection" })
+
+-------------------------------------------------------------------------------
+-- Quickfix & Location List Navigation
+-------------------------------------------------------------------------------
+map("n", "<leader>co", "<cmd>copen<cr>", { desc = "Open quickfix list" })
+map("n", "<leader>cc", "<cmd>cclose<cr>", { desc = "Close quickfix list" })
+map("n", "]q", "<cmd>cnext<cr>zz", { desc = "Next quickfix item" })
+map("n", "[q", "<cmd>cprev<cr>zz", { desc = "Previous quickfix item" })
+map("n", "]l", "<cmd>lnext<cr>zz", { desc = "Next location item" })
+map("n", "[l", "<cmd>lprev<cr>zz", { desc = "Previous location item" })
+
+-------------------------------------------------------------------------------
+-- LSP Enhancements (Additional)
+-------------------------------------------------------------------------------
+-- Type definition (different from definition)
+map("n", "<leader>lt", vim.lsp.buf.type_definition, { desc = "Type definition" })
+
+-- Workspace symbols search
+map("n", "<leader>lw", "<cmd>Telescope lsp_workspace_symbols<cr>", { desc = "Workspace symbols" })
+
+-- Document symbols
+map("n", "<leader>lo", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "Document symbols (outline)" })
+
+-- Incoming/outgoing calls
+map("n", "<leader>lci", vim.lsp.buf.incoming_calls, { desc = "Incoming calls" })
+map("n", "<leader>lco", vim.lsp.buf.outgoing_calls, { desc = "Outgoing calls" })
+
+-- Diagnostics via Telescope
+map("n", "<leader>lD", "<cmd>Telescope diagnostics bufnr=0<cr>", { desc = "Buffer diagnostics" })
+map("n", "<leader>lW", "<cmd>Telescope diagnostics<cr>", { desc = "Workspace diagnostics" })
+
+-- Toggle inlay hints (Neovim 0.10+)
+map("n", "<leader>lh", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "Toggle inlay hints" })
+
+-------------------------------------------------------------------------------
+-- Telescope Enhancements
+-------------------------------------------------------------------------------
+-- Search in current buffer
+map("n", "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Fuzzy find in buffer" })
+
+-- Git-related searches
+map("n", "<leader>gf", "<cmd>Telescope git_files<cr>", { desc = "Git files" })
+map("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Git commits" })
+map("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { desc = "Git branches" })
+map("n", "<leader>gs", "<cmd>Telescope git_status<cr>", { desc = "Git status" })
+
+-- Search word under cursor
+map("n", "<leader>fw", "<cmd>Telescope grep_string<cr>", { desc = "Find word under cursor" })
+
+-- Resume last search
+map("n", "<leader>fR", "<cmd>Telescope resume<cr>", { desc = "Resume last search" })
+
+-- Command history
+map("n", "<leader>fc", "<cmd>Telescope command_history<cr>", { desc = "Command history" })
+
+-- Keymaps search
+map("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Search keymaps" })
+
+-------------------------------------------------------------------------------
+-- Text Object Enhancements (Select entire buffer)
+-------------------------------------------------------------------------------
+map("n", "<leader>a", "ggVG", { desc = "Select all" })
+map("n", "<leader>y", "<cmd>%y+<cr>", { desc = "Yank entire file" })
+
+-------------------------------------------------------------------------------
+-- Quick Fix Common Typos & Commands
+-------------------------------------------------------------------------------
+vim.api.nvim_create_user_command("W", "w", {})      -- :W saves
+vim.api.nvim_create_user_command("Q", "q", {})      -- :Q quits
+vim.api.nvim_create_user_command("Wq", "wq", {})    -- :Wq saves and quits
+vim.api.nvim_create_user_command("WQ", "wq", {})    -- :WQ saves and quits
+
+-------------------------------------------------------------------------------
+-- Treesitter Text Objects (if ts-textobjects is installed)
+-------------------------------------------------------------------------------
+-- These work with your treesitter setup for selecting functions, classes, etc.
+-- Example: vaf = select around function, vif = select inside function
+
+-------------------------------------------------------------------------------
+-- Code Folding Shortcuts
+-------------------------------------------------------------------------------
+map("n", "za", "za", { desc = "Toggle fold" })
+map("n", "zo", "zo", { desc = "Open fold" })
+map("n", "zc", "zc", { desc = "Close fold" })
+map("n", "zO", "zO", { desc = "Open fold recursively" })
+map("n", "zC", "zC", { desc = "Close fold recursively" })
+
+-------------------------------------------------------------------------------
+-- Better Marks
+-------------------------------------------------------------------------------
+map("n", "'", "`", { desc = "Jump to mark (exact position)" })
+
+-------------------------------------------------------------------------------
+-- Source/Reload Config
+-------------------------------------------------------------------------------
+map("n", "<leader>xr", "<cmd>source %<cr>", { desc = "Source current file" })
+map("n", "<leader>xx", "<cmd>source $MYVIMRC<cr>", { desc = "Reload config" })
+
+-------------------------------------------------------------------------------
+-- Spell Check Toggle
+-------------------------------------------------------------------------------
+map("n", "<leader>ts", "<cmd>set spell!<cr>", { desc = "Toggle spell check" })
+
