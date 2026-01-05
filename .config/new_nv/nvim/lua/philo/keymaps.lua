@@ -60,7 +60,7 @@ map("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Toggle undo tree" })
 map("n", "<leader>ff", function()
   require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
 end, { desc = "Find files" })
-map("n", "<leader>f", function()
+map("n", "<leader>F", function()
   require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
 end, { desc = "Find files" })
 map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
@@ -147,7 +147,7 @@ _G.nvim_tree_on_attach = nvim_tree_on_attach
 -------------------------------------------------------------------------------
 -- Quick Save & Quit
 -------------------------------------------------------------------------------
-map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+map("n", "<leader>ww", "<cmd>w<cr>", { desc = "Save file" })
 map("n", "<leader>W", "<cmd>wa<cr>", { desc = "Save all files" })
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit window" })
 map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit all" })
@@ -242,7 +242,7 @@ map("v", "//", [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], { desc = "Search for selec
 -- Quickfix & Location List Navigation
 -------------------------------------------------------------------------------
 map("n", "<leader>co", "<cmd>copen<cr>", { desc = "Open quickfix list" })
-map("n", "<leader>cc", "<cmd>cclose<cr>", { desc = "Close quickfix list" })
+map("n", "<leader>cq", "<cmd>cclose<cr>", { desc = "Close quickfix list" })
 map("n", "]q", "<cmd>cnext<cr>zz", { desc = "Next quickfix item" })
 map("n", "[q", "<cmd>cprev<cr>zz", { desc = "Previous quickfix item" })
 map("n", "]l", "<cmd>lnext<cr>zz", { desc = "Next location item" })
@@ -456,7 +456,7 @@ map("n", "gp", "`[v`]", { desc = "Reselect pasted text" })
 map("n", "gV", "`[v`]", { desc = "Select last changed text" })
 
 -- Split line at cursor (opposite of J)
-map("n", "S", "i<cr><Esc>^", { desc = "Split line at cursor" })
+-- map("n", "S", "i<cr><Esc>^", { desc = "Split line at cursor" })
 
 -- Fix common typos while typing
 map("i", "teh", "the")
@@ -528,7 +528,7 @@ end, { desc = "Find files in current dir" })
 map("n", "<leader>fm", "<cmd>Telescope marks<cr>", { desc = "Find marks" })
 
 -- Search registers
-map("n", "<leader>fR", "<cmd>Telescope registers<cr>", { desc = "Find registers" })
+map("n", "<leader>fG", "<cmd>Telescope registers<cr>", { desc = "Find registers" })
 
 -- Search jumplist
 map("n", "<leader>fj", "<cmd>Telescope jumplist<cr>", { desc = "Find jumplist" })

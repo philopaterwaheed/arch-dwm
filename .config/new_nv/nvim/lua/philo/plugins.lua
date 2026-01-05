@@ -39,7 +39,6 @@ local plugins = {
   {
     "kyazdani42/nvim-tree.lua",
     cmd = "NvimTreeToggle",
-    keys = { { "<leader>n", "<cmd>NvimTreeToggle<cr>", desc = "Toggle File Explorer" } },
     config = function()
       require("philo.nvim-tree").setup()
     end,
@@ -71,7 +70,6 @@ local plugins = {
   {
     "mbbill/undotree",
     cmd = "UndotreeToggle",
-    keys = { { "<leader>u", vim.cmd.UndotreeToggle, desc = "Toggle Undo Tree" } },
   },
 
   -- Dashboard/Start screen
@@ -256,10 +254,6 @@ local plugins = {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
     cmd = "Telescope",
-    keys = {
-      { "<leader>f", desc = "Find Files" },
-      { "<leader>t", "<cmd>Telescope live_grep<cr>", desc = "Live Grep" },
-    },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-media-files.nvim",
