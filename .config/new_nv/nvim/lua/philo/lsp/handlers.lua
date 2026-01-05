@@ -62,6 +62,14 @@ local function lsp_highlight_document(client, bufnr)
       buffer = bufnr,
       callback = vim.lsp.buf.clear_references,
     })
+    
+    -- Clear highlights when entering visual mode
+    vim.api.nvim_create_autocmd("ModeChanged", {
+      group = group,
+      buffer = bufnr,
+      pattern = "*:[vV\x16]*",
+      callback = vim.lsp.buf.clear_references,
+    })
   end
 end
 
