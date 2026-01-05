@@ -25,24 +25,20 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -------------------------------------------------------------------------------
--- Window Navigation (<leader>w prefix + quick access)
+-- Window Navigation (<leader>w prefix)
 -------------------------------------------------------------------------------
-map("n", "<leader>h", "<C-w>h", { desc = "Move to left window" })
-map("n", "<leader>j", "<C-w>j", { desc = "Move to lower window" })
-map("n", "<leader>k", "<C-w>k", { desc = "Move to upper window" })
-map("n", "<leader>l", "<C-w>l", { desc = "Move to right window" })
+map("n", "<leader>wh", "<C-w>h", { desc = "Move to left window" })
+map("n", "<leader>wj", "<C-w>j", { desc = "Move to lower window" })
+map("n", "<leader>wk", "<C-w>k", { desc = "Move to upper window" })
+map("n", "<leader>wl", "<C-w>l", { desc = "Move to right window" })
 
--- Window resizing
-map("n", "<leader>wj", "<cmd>resize +5<cr>", { desc = "Increase window height" })
-map("n", "<leader>wk", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
-map("n", "<leader>wh", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
-map("n", "<leader>wl", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
-
--- Also keep shift variants for quick resizing
-map("n", "<leader>J", "<cmd>resize +5<cr>", { desc = "Increase window height" })
-map("n", "<leader>K", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
-map("n", "<leader>H", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
-map("n", "<leader>L", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
+-- Window resizing (using arrow keys to avoid conflicts)
+map("n", "<leader>w<Up>", "<cmd>resize +5<cr>", { desc = "Increase window height" })
+map("n", "<leader>w<Down>", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
+map("n", "<leader>w<Left>", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
+map("n", "<leader>w<Right>", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
+map("n", "<leader>w+", "<cmd>resize +5<cr>", { desc = "Increase window height" })
+map("n", "<leader>w-", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
 
 -------------------------------------------------------------------------------
 -- Buffer Navigation (<leader>b prefix)
@@ -68,7 +64,7 @@ map("n", "<leader>f", function()
   require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
 end, { desc = "Find files" })
 map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
-map("n", "<leader>t", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
+map("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
 map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
 map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Find help" })
 map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent files" })
@@ -111,8 +107,9 @@ map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up (centered)" })
 map("n", "n", "nzzzv", { desc = "Next search (centered)" })
 map("n", "N", "Nzzzv", { desc = "Previous search (centered)" })
 
--- Join lines without moving cursor
+-- Join lines without moving cursor (keep default J behavior enhanced)
 map("n", "J", "mzJ`z", { desc = "Join lines" })
+map("n", "gJ", "J", { desc = "Join lines (keep spaces)" })
 
 -------------------------------------------------------------------------------
 -- NvimTree custom keymaps (buffer-local, set on attach)
@@ -288,8 +285,8 @@ map("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Git commits" 
 map("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { desc = "Git branches" })
 map("n", "<leader>gs", "<cmd>Telescope git_status<cr>", { desc = "Git status" })
 
--- Search word under cursor
-map("n", "<leader>fw", "<cmd>Telescope grep_string<cr>", { desc = "Find word under cursor" })
+-- Search word under cursor  
+map("n", "<leader>fW", "<cmd>Telescope grep_string<cr>", { desc = "Find word under cursor" })
 
 -- Resume last search
 map("n", "<leader>fR", "<cmd>Telescope resume<cr>", { desc = "Resume last search" })
@@ -391,12 +388,12 @@ map("v", "<leader>{", "c{<C-r>\"}<Esc>", { desc = "Wrap in braces" })
 -- Enhanced Navigation
 -------------------------------------------------------------------------------
 -- Beginning/end of line (easier than 0 and $)
-map({ "n", "v" }, "H", "^", { desc = "Go to first non-blank" })
-map({ "n", "v" }, "L", "$", { desc = "Go to end of line" })
+map({ "n", "v" }, "gh", "^", { desc = "Go to first non-blank" })
+map({ "n", "v" }, "gl", "$", { desc = "Go to end of line" })
 
--- Quick paragraph navigation
-map({ "n", "v" }, "<C-j>", "}", { desc = "Next paragraph" })
-map({ "n", "v" }, "<C-k>", "{", { desc = "Previous paragraph" })
+-- Quick paragraph navigation (use } and { directly or with g prefix)
+map({ "n", "v" }, "g}", "}", { desc = "Next paragraph" })
+map({ "n", "v" }, "g{", "{", { desc = "Previous paragraph" })
 
 -- Jump to matching bracket/brace
 map("n", "<Tab>", "%", { desc = "Jump to matching bracket" })
@@ -504,14 +501,15 @@ end, { desc = "Next diagnostic" })
 -------------------------------------------------------------------------------
 -- Quick Comment Toggle (works with Comment.nvim)
 -------------------------------------------------------------------------------
--- Ctrl+/ to toggle comment (common IDE binding)
-map("n", "<C-/>", function()
+-- gc is the standard prefix from Comment.nvim (gcc for line, gc for motion)
+-- Adding alternative keymaps that don't conflict with terminal mode
+map("n", "<leader>cc", function()
   require("Comment.api").toggle.linewise.current()
-end, { desc = "Toggle comment" })
+end, { desc = "Toggle comment line" })
 
-map("v", "<C-/>", "<Esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", { desc = "Toggle comment" })
+map("v", "<leader>cc", "<Esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", { desc = "Toggle comment" })
 
--- Also map Ctrl+_ for terminals that send this for Ctrl+/
+-- Also keep Ctrl+_ for terminals (many terminals send this for Ctrl+/)
 map("n", "<C-_>", function()
   require("Comment.api").toggle.linewise.current()
 end, { desc = "Toggle comment" })
