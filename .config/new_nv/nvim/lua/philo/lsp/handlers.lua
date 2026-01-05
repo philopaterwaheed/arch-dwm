@@ -44,34 +44,52 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
   { border = "rounded" }
 )
 
-local function lsp_highlight_document(client)
-  if client.server_capabilities.documentHighlight then
-    vim.api.nvim_exec([[
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold <buffer>   lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved <buffer>  lua vim.lsp.buf.clear_references()
-      augroup END
-    ]], false)
+-------------------------------------------------------------------------------
+-- Document Highlighting (highlight references under cursor)
+-------------------------------------------------------------------------------
+local function lsp_highlight_document(client, bufnr)
+  if client.server_capabilities.documentHighlightProvider then
+    local group = vim.api.nvim_create_augroup("lsp_document_highlight", { clear = false })
+    vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+    
+    vim.api.nvim_create_autocmd("CursorHold", {
+      group = group,
+      buffer = bufnr,
+      callback = vim.lsp.buf.document_highlight,
+    })
+    vim.api.nvim_create_autocmd("CursorMoved", {
+      group = group,
+      buffer = bufnr,
+      callback = vim.lsp.buf.clear_references,
+    })
   end
 end
 
-local function lsp_keymaps(bufnr)
-  local opts = { noremap = true, silent = true }
-end
-
+-------------------------------------------------------------------------------
+-- LSP on_attach (called when a server attaches to a buffer)
+-------------------------------------------------------------------------------
 local function on_attach(client, bufnr)
+  -- Disable formatting for ts_ls (use prettier via conform instead)
   if client.name == "ts_ls" then
     client.server_capabilities.documentFormattingProvider = false
   end
-  lsp_keymaps(bufnr)
-  lsp_highlight_document(client)
+  
+  -- Enable document highlighting
+  lsp_highlight_document(client, bufnr)
+  
+  -- Enable inlay hints if supported (Neovim 0.10+)
+  if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
 end
 
-local capabilities = {}
-local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if status_ok then
-  capabilities = cmp_nvim_lsp.default_capabilities()
+-------------------------------------------------------------------------------
+-- LSP Capabilities (enhanced by nvim-cmp)
+-------------------------------------------------------------------------------
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if cmp_ok then
+  capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 end
 
 local servers = {

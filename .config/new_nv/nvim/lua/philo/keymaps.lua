@@ -1,88 +1,144 @@
+--[[
+  Keymap Configuration
+  
+  Organization:
+  - <leader>   = Space (set early for other configs)
+  - <leader>f  = Find/Files (Telescope)
+  - <leader>g  = Git operations
+  - <leader>l  = LSP operations  
+  - <leader>b  = Buffer operations
+  - <leader>w  = Window operations
+  - <leader>t  = Terminal/Toggle
+  
+  Using modern vim.keymap.set() for all mappings
+--]]
+
+-- Set leader key first (must be before any leader mappings)
 vim.g.mapleader = " "
-local opts = { noremap = true, silent = true }
-local term_opts = { silent = true }
+vim.g.maplocalleader = " "
 
--- Shorten function name
-local keymap = vim.api.nvim_set_keymap
--- Normal --
--- Better window navigation
-keymap("n", "<leader>h", "<C-w>h", opts)
-keymap("n", "<leader>j", "<C-w>j", opts)
-keymap("n", "<leader>k", "<C-w>k", opts)
-keymap("n", "<leader>l", "<C-w>l", opts)
-keymap("n", "<leader>.", ":bnext<CR>", opts)
-keymap("n", "<leader>,", ":bprevious<CR>", opts)
-keymap("n", "<leader>J", "<cmd>resize +5<cr>", opts)
-keymap("n", "<leader>K", "<cmd>resize -5<cr>", opts)
-keymap("n", "<leader>H", "<cmd>vertical resize -5<cr>", opts)
-keymap("n", "<leader>L", "<cmd>vertical resize +5<cr>", opts)
---: keymap("n", "<leader>f", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>", opts)
-keymap("n", "<leader>t", "<cmd>Telescope live_grep<cr>", opts)
--- Toggle nvim-treevim
-keymap('n', "<leader>n", ':NvimTreeToggle<CR>', {noremap = true, silent = true})
---
--- undo tree 
-vim.keymap.set('n', "<leader>u", vim.cmd.UndotreeToggle)
--- Close tab key mapping in bufferline
-keymap('n', '<leader><Esc>', ':bd<CR>', { noremap = true, silent = true })
--- telescope functions
-keymap( "n", "<leader>md" , ":Telescope lsp_definitions<cr>" ,  opts)--works
-keymap( "n", "<leader>mD", ":lua vim.lsp.buf.declaration()<cr>", opts)--works
-keymap( "n", "<leader>mi", ":lua  vim.lsp.buf.implementation()<cr>", opts)
-keymap( "n", "<leader>mrr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-keymap( "n", "<leader>ma", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-keymap( "n", "<leader>mf", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)--works
-keymap( "n", "<leader>mrn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)--works
-keymap( "n", "<leader>m[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-keymap( "n", "<leader>ml",'<cmd>lua vim.diagnostic.open_float()<CR>',opts)--works
-keymap( "n", "<leader>m]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-keymap( "n", "<leader>mq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-keymap( "n", "<leader>ms", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
-keymap('n', '<leader>mi', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
--- pasting without yanking
-keymap ("x" , "<leader>p", "\"_dP", opts)
--- navigation
-vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', {noremap = true})
-vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', {noremap = true})
-vim.api.nvim_set_keymap('n', 'n', 'nzzzv', {noremap = true})
-vim.api.nvim_set_keymap('n', 'N', 'Nzzzv', {noremap = true})
--- This function has been generated from your
---   view.mappings.list
---   view.mappings.custom_only
---   remove_keymaps
---
--- You should add this function to your configuration and set on_attach = on_attach in the nvim-tree setup call.
---
--- Although care was taken to ensure correctness and completeness, your review is required.
---
--- Please check for the following issues in auto generated content:
---   "Mappings removed" is as you expect
---   "Mappings migrated" are correct
---
--- Please see https://github.com/nvim-tree/nvim-tree.lua/wiki/Migrating-To-on_attach for assistance in migrating.
---
+-- Helper function for cleaner keymap definitions
+local function map(mode, lhs, rhs, opts)
+  opts = opts or {}
+  opts.silent = opts.silent ~= false
+  vim.keymap.set(mode, lhs, rhs, opts)
+end
 
-local function on_attach(bufnr)
-  local api = require('nvim-tree.api')
+-------------------------------------------------------------------------------
+-- Window Navigation (<leader>w prefix + quick access)
+-------------------------------------------------------------------------------
+map("n", "<leader>h", "<C-w>h", { desc = "Move to left window" })
+map("n", "<leader>j", "<C-w>j", { desc = "Move to lower window" })
+map("n", "<leader>k", "<C-w>k", { desc = "Move to upper window" })
+map("n", "<leader>l", "<C-w>l", { desc = "Move to right window" })
+
+-- Window resizing
+map("n", "<leader>wj", "<cmd>resize +5<cr>", { desc = "Increase window height" })
+map("n", "<leader>wk", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
+map("n", "<leader>wh", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
+map("n", "<leader>wl", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
+
+-- Also keep shift variants for quick resizing
+map("n", "<leader>J", "<cmd>resize +5<cr>", { desc = "Increase window height" })
+map("n", "<leader>K", "<cmd>resize -5<cr>", { desc = "Decrease window height" })
+map("n", "<leader>H", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
+map("n", "<leader>L", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
+
+-------------------------------------------------------------------------------
+-- Buffer Navigation (<leader>b prefix)
+-------------------------------------------------------------------------------
+map("n", "<leader>.", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<leader>,", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+map("n", "<leader>bd", "<cmd>Bdelete<cr>", { desc = "Delete buffer" })
+map("n", "<leader><Esc>", "<cmd>Bdelete<cr>", { desc = "Delete buffer" })
+
+-------------------------------------------------------------------------------
+-- File Explorer & Undo Tree
+-------------------------------------------------------------------------------
+map("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
+map("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Toggle undo tree" })
+
+-------------------------------------------------------------------------------
+-- Telescope / Find (<leader>f prefix)
+-------------------------------------------------------------------------------
+map("n", "<leader>ff", function()
+  require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
+end, { desc = "Find files" })
+map("n", "<leader>f", function()
+  require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
+end, { desc = "Find files" })
+map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
+map("n", "<leader>t", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
+map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
+map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Find help" })
+map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent files" })
+
+
+-------------------------------------------------------------------------------
+-- LSP Operations (<leader>l prefix)
+-------------------------------------------------------------------------------
+map("n", "<leader>md", "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition" })
+map("n", "<leader>mD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
+map("n", "<leader>mi", vim.lsp.buf.hover, { desc = "Hover documentation" })
+map("n", "<leader>mrr", vim.lsp.buf.references, { desc = "Find references" })
+map("n", "<leader>ma", vim.lsp.buf.code_action, { desc = "Code actions" })
+map("n", "<leader>mf", vim.diagnostic.open_float, { desc = "Floating diagnostics" })
+map("n", "<leader>mrn", vim.lsp.buf.rename, { desc = "Rename symbol" })
+map("n", "<leader>ml", vim.diagnostic.open_float, { desc = "Line diagnostics" })
+map("n", "<leader>mq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
+map("n", "<leader>ms", vim.lsp.buf.signature_help, { desc = "Signature help" })
+map("n", "[d", function() vim.diagnostic.goto_prev({ border = "rounded" }) end, { desc = "Previous diagnostic" })
+map("n", "]d", function() vim.diagnostic.goto_next({ border = "rounded" }) end, { desc = "Next diagnostic" })
+-- Formatting (now using conform.nvim via <leader>mp)
+-- Keymap defined in conform.lua
+
+-------------------------------------------------------------------------------
+-- Visual Mode Improvements
+-------------------------------------------------------------------------------
+-- Paste without yanking the replaced text
+map("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
+
+-- Stay in visual mode when indenting
+map("v", "<", "<gv", { desc = "Indent left" })
+map("v", ">", ">gv", { desc = "Indent right" })
+
+-------------------------------------------------------------------------------
+-- Navigation Improvements
+-------------------------------------------------------------------------------
+-- Keep cursor centered when scrolling
+map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down (centered)" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up (centered)" })
+map("n", "n", "nzzzv", { desc = "Next search (centered)" })
+map("n", "N", "Nzzzv", { desc = "Previous search (centered)" })
+
+-- Join lines without moving cursor
+map("n", "J", "mzJ`z", { desc = "Join lines" })
+
+-------------------------------------------------------------------------------
+-- NvimTree custom keymaps (buffer-local, set on attach)
+-------------------------------------------------------------------------------
+-- This function is called when NvimTree attaches to a buffer
+local function nvim_tree_on_attach(bufnr)
+  local api = require("nvim-tree.api")
 
   local function opts(desc)
-    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
 
+  -- Default mappings
+  api.config.mappings.default_on_attach(bufnr)
 
-  -- Mappings migrated from view.mappings.list
-  --
-  -- You will need to insert "your code goes here" for any mappings with a custom action_cb
-  vim.keymap.set('n', 'A', api.tree.expand_all, opts('Expand All'))
-  vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
-  vim.keymap.set('n', 'C', api.tree.change_root_to_node, opts('CD'))
-  vim.keymap.set('n', 'P', function()
+  -- Custom mappings
+  vim.keymap.set("n", "A", api.tree.expand_all, opts("Expand All"))
+  vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+  vim.keymap.set("n", "C", api.tree.change_root_to_node, opts("CD"))
+  vim.keymap.set("n", "P", function()
     local node = api.tree.get_node_under_cursor()
     print(node.absolute_path)
-  end, opts('Print Node Path'))
-
-  vim.keymap.set('n', 'Z', api.node.run.system, opts('Run System'))
-
+  end, opts("Print Node Path"))
+  vim.keymap.set("n", "Z", api.node.run.system, opts("Run System"))
 end
+
+-- Export for nvim-tree setup
+_G.nvim_tree_on_attach = nvim_tree_on_attach
+

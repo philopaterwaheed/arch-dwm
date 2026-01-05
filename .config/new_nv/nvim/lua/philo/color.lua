@@ -1,24 +1,27 @@
--- Attaches to every FileType mode
-
--- Attach to certain Filetypes, add special configuration for `html`
--- Use `background` for everything else.
---require 'colorizer'.setup {
---  'css';
---  'javascript';
---  html = {
---   mode = 'foreground';}
---  '*'; -- Highlight all files, but customize some others.
---  css = { rgb_fn = true; }; -- Enable parsing rgb(...) functions in css.
---  html = { names = false; }; -- Disable parsing "names" like Blue or Gray
---}
+--[[
+  Colorizer Configuration
+  
+  Highlights color codes in files (hex, rgb, etc.)
+  Only enabled for relevant filetypes for performance
+--]]
 
 local M = {}
+
 M.setup = function()
-require 'colorizer'.setup {
-  '!*'; -- Highlight all files, but customize some others.
-  'h';
-  css = { rgb_fn = true; }; -- Enable parsing rgb(...) functions in css.
-  html = { names = false; } -- Disable parsing "names" like Blue or Gray
-}
-end 
+  local status_ok, colorizer = pcall(require, "colorizer")
+  if not status_ok then
+    return
+  end
+
+  colorizer.setup({
+    "css",
+    "html",
+    "javascript",
+    "typescript",
+    "lua",
+    css = { rgb_fn = true },  -- Enable parsing rgb(...) functions
+    html = { names = false }, -- Disable parsing color names
+  })
+end
+
 return M
