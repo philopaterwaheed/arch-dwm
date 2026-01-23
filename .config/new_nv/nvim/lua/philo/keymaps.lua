@@ -459,9 +459,9 @@ map("n", "gV", "`[v`]", { desc = "Select last changed text" })
 -- map("n", "S", "i<cr><Esc>^", { desc = "Split line at cursor" })
 
 -- Fix common typos while typing
-map("i", "teh", "the")
-map("i", "adn", "and")
-map("i", "waht", "what")
+-- map("i", "teh", "the")
+-- map("i", "adn", "and")
+-- map("i", "waht", "what")
 
 -------------------------------------------------------------------------------
 -- LSP Quick Actions (Additional)
