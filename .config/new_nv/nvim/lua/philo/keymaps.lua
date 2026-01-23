@@ -439,9 +439,9 @@ map("n", "<leader>wo", "<C-w>o", { desc = "Close other windows" })
 -------------------------------------------------------------------------------
 -- Search Enhancements
 -------------------------------------------------------------------------------
--- Search current word without jumping
-map("n", "*", "*N", { desc = "Search word (stay)" })
-map("n", "#", "#N", { desc = "Search word backward (stay)" })
+-- Search current word and center
+map("n", "*", "*zzzv", { desc = "Search word forward (centered)" })
+map("n", "#", "#zzzv", { desc = "Search word backward (centered)" })
 
 -- Visual mode search for selected text
 map("v", "*", [[y/\V<C-R>=escape(@",'/\')<CR><CR>N]], { desc = "Search selection (stay)" })
