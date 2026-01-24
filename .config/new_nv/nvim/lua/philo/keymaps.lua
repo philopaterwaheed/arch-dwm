@@ -179,10 +179,6 @@ map("v", "<leader>d", "y'>p", { desc = "Duplicate selection" })
 -------------------------------------------------------------------------------
 -- Insert Mode Enhancements
 -------------------------------------------------------------------------------
--- Quick escape alternatives
-map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
-map("i", "kj", "<Esc>", { desc = "Exit insert mode" })
-
 -- Move cursor in insert mode (Ctrl + h/j/k/l)
 map("i", "<C-h>", "<Left>", { desc = "Move cursor left" })
 map("i", "<C-l>", "<Right>", { desc = "Move cursor right" })
