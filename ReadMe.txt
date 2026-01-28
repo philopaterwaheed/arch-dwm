@@ -113,6 +113,8 @@ tlp.conf goes to /etc/tlp.conf
 /lib/udev/rules.d/50-remove-nvidia.rules
 sudo mkinitcpio -P
 
+or just use envycontrol
+
 a good font JetBrainsMonoNl Nerd Font Mono
 
 good recomendations 

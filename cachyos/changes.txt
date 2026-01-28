@@ -33,6 +33,7 @@ blueman
 slock
 lxappearance
 ntfs-3g
+envycontrol
 +++++++++++++++++++++++++++++++++++++++++++++++
 crafty install
 +++++++++++++++++++++++++++++++++++++++++++++++
