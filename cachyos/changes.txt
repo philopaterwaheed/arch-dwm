@@ -34,6 +34,7 @@ slock
 lxappearance
 ntfs-3g
 envycontrol
+wmctrl
 +++++++++++++++++++++++++++++++++++++++++++++++
 crafty install
 +++++++++++++++++++++++++++++++++++++++++++++++

@@ -3,9 +3,9 @@
 ## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
 
 # Import Current Theme
-DIR="$HOME/.config/bspwm"
+DIR="/home/philosan/dwm/theme/rofi/"
 STYLE="adaptive"
-RASI="$DIR/themes/$STYLE/rofi/launcher.rasi"
+RASI="$DIR/launcher.rasi"
 
 # Run
 rofi \
