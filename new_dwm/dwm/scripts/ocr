@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+tmp=$(mktemp --suffix=.png)
+trap 'rm -f "$tmp"' EXIT
+
+# Select an area of the screen
+maim -s "$tmp"
+
+# Run OCR
+text=$(tesseract "$tmp" stdout -l eng 2>/dev/null)
+
+# Remove leading/trailing whitespace
+text=$(printf '%s' "$text" | sed '/^[[:space:]]*$/d')
+
+if [[ -z "$text" ]]; then
+    notify-send "OCR" "No text detected."
+    exit 1
+fi
+
+# Copy to clipboard
+printf '%s' "$text" | xclip -selection clipboard
+
+notify-send "OCR" "Text copied to clipboard."

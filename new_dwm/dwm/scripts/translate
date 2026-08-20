@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -e
+
+tmp=$(mktemp --suffix=.png)
+trap 'rm -f "$tmp"' EXIT
+
+# Select screen region
+maim -s "$tmp"
+
+# OCR English + Arabic
+text=$(tesseract "$tmp" stdout -l eng+ara 2>/dev/null)
+
+# Remove empty lines
+text=$(printf '%s\n' "$text" | sed '/^[[:space:]]*$/d')
+
+if [[ -z "$text" ]]; then
+    notify-send "OCR" "No text detected."
+    exit 1
+fi
+
+# Put OCR result into clipboard
+printf '%s' "$text" | xclip -selection clipboard
+
+# Open Google Translate in Zen
+zen-browser "https://translate.google.com/" >/dev/null 2>&1 &
+
+# Give Zen time to open/focus
+sleep 2
+
+# Focus Zen
+xdotool search --onlyvisible --class "zen" windowactivate --sync 2>/dev/null || \
+xdotool search --onlyvisible --name "Google Translate" windowactivate --sync 2>/dev/null
+
+sleep 0.5
+
+# Paste OCR text
+xdotool key --clearmodifiers ctrl+v
+
+notify-send "OCR Translator" "Text translated from screen."
