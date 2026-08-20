@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -e
+
+tmp=$(mktemp --suffix=.png)
+trap 'rm -f "$tmp"' EXIT
+
+# Select region
+maim -s "$tmp"
+[[ ! -s "$tmp" ]] && exit 0
+
+ua="lens-search-script/1.0 (personal desktop screenshot search)"
+
+upload_file() {
+    local file="$1" url
+
+    # Primary: 0x0.st (send a descriptive UA — it blocks generic "curl/x.y" agents)
+    url=$(curl -fsS -A "$ua" -F "file=@${file}" https://0x0.st 2>/dev/null) || true
+    url=${url%$'\n'}
+    if [[ -n "$url" ]]; then
+        echo "$url"
+        return 0
+    fi
+
+    # Fallback: catbox.moe
+    url=$(curl -fsS -A "$ua" -F "reqtype=fileupload" -F "fileToUpload=@${file}" https://catbox.moe/user/api.php 2>/dev/null) || true
+    url=${url%$'\n'}
+    if [[ -n "$url" ]]; then
+        echo "$url"
+        return 0
+    fi
+
+    return 1
+}
+
+img_url=$(upload_file "$tmp") || {
+    notify-send "Screen Search" "Upload failed on all hosts"
+    exit 1
+}
+
+encoded=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$img_url")
+
+# Open Google Lens directly with the image already loaded — no GUI automation needed
+zen-browser "https://lens.google.com/uploadbyurl?url=${encoded}" >/dev/null 2>&1 &
+
+notify-send "Screen Search" "Searching selected area with Google Lens"
