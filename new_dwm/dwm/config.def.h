@@ -110,6 +110,11 @@ static const char *briup[]  = {"/home/philosan/dwm/scripts/dwmbrightness","--inc
 static const char *rofi_runner[] = {"/home/philosan/dwm/scripts/rofi_runner",NULL};
 static const char *rofi_launcher[] = {"/home/philosan/dwm/scripts/rofi_launcher",NULL};
 static const char *rofi_screenShot[] = {"/home/philosan/dwm/scripts/rofi_screenshot",NULL};
+static const char *rofi_process_killer[] = {"/home/philosan/dwm/scripts/rofi_process_killer",NULL};
+static const char *rofi_window[] = {"/home/philosan/dwm/scripts/rofi_window",NULL};
+static const char *search[] = {"/home/philosan/dwm/scripts/selector_search",NULL};
+static const char *translate[] = {"/home/philosan/dwm/scripts/translate",NULL};
+static const char *ocr[] = {"/home/philosan/dwm/scripts/ocr",NULL};
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -190,6 +195,8 @@ static const Key keys[] = {
   { MODKEY,                       XK_c,      spawn,       {.v=nvim}},
   { MODKEY,                       XK_Print,  spawn,      {.v = s_shot} },
   { MODKEY|ShiftMask,                       XK_Print,  spawn,      {.v = rofi_screenShot} },
+  { MODKEY,                       XK_w,  spawn,      {.v = rofi_window} },
+  { MODKEY,                       XK_a,  spawn,      {.v = rofi_process_killer} },
   { 0,                       XF86XK_AudioLowerVolume,  spawn,      {.v=vol_down} },
   { 0,                      XF86XK_AudioRaiseVolume,  spawn,      {.v=vol_up} }, 
   { 0,                      XF86XK_AudioMute,      spawn,      {.v = vol_mute } },
@@ -198,7 +205,9 @@ static const Key keys[] = {
   { MODKEY,                       XK_F4,      spawn,      {.v=shutdown}},
   { 0,                       XF86XK_MonBrightnessUp,      spawn,      {.v=briup}},
   { 0,                       XF86XK_MonBrightnessDown,      spawn,      {.v=bridown}},
-  { MODKEY,                       XK_g,      spawn,      {.v=dmenu_s}},
+  { MODKEY,                       XK_g,      spawn,      {.v=search}},
+  { MODKEY|ShiftMask,                       XK_g,      spawn,      {.v=ocr}},
+  { MODKEY|ControlMask,                       XK_g,      spawn,      {.v=translate}},
 
 };
 
