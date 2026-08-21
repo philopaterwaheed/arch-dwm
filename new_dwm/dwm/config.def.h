@@ -209,6 +209,7 @@ static const Key keys[] = {
   { MODKEY|ShiftMask,                       XK_g,      spawn,      {.v=ocr}},
   { MODKEY|ControlMask,                       XK_g,      spawn,      {.v=translate}},
 
+  {0},
 };
 
 /* resizemousescroll direction argument list */

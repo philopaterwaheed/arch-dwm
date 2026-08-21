@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
@@ -1139,6 +1140,13 @@ grabbuttons(Client *c, int focused)
 	}
 }
 
+static char
+key_not_empty(const Key *key)
+{
+    static const Key empty = {0};
+    return memcmp(key, &empty, sizeof(Key)) != 0;
+}
+
 void
 grabkeys(void)
 {
@@ -1155,7 +1163,7 @@ grabkeys(void)
 		if (!syms)
 			return;
 		for (k = start; k <= end; k++)
-			for (i = 0; i < LENGTH(keys); i++)
+			for (i = 0; key_not_empty(keys+i); i++)
 				/* skip modifier codes, we do that ourselves */
 				if (keys[i].keysym == syms[(k - start) * skip])
 					for (j = 0; j < LENGTH(modifiers); j++)
@@ -1186,8 +1194,9 @@ isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info)
 }
 #endif /* XINERAMA */
 
-void
-keypress(XEvent *e)
+static void
+keypress_r(XEvent *e, const Key *keys)
+
 {
 	unsigned int i;
 	KeySym keysym;
@@ -1195,12 +1204,75 @@ keypress(XEvent *e)
 
 	ev = &e->xkey;
 	keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
-	for (i = 0; i < LENGTH(keys); i++)
+	for (i = 0; key_not_empty(keys+i); i++)
 		if (keysym == keys[i].keysym
 		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
-		&& keys[i].func)
-			keys[i].func(&(keys[i].arg));
+           	&& keys[i].func)
+            	keys[i].func(&(keys[i].arg));
 }
+
+static char
+grabkeyboard(void) //taken from dmenu
+{
+	struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000  };
+
+	/* try to grab keyboard, we may have to wait for another process to ungrab */
+	for (int i = 0; i < 1000; i++) {
+		if (XGrabKeyboard(dpy, DefaultRootWindow(dpy), True, GrabModeAsync,
+		    GrabModeAsync, CurrentTime) == GrabSuccess)
+			return 0;
+		nanosleep(&ts, NULL);
+	}
+    return 1; //failed
+}
+
+static char
+keysym_is_modifier(KeySym s)
+{
+	return (s == XK_Shift_L ||
+        s == XK_Shift_R ||
+        s == XK_Control_L ||
+        s == XK_Control_R ||
+        s == XK_Caps_Lock ||
+        s == XK_Shift_Lock ||
+        s == XK_Meta_L ||
+        s == XK_Meta_R ||
+        s == XK_Alt_L ||
+        s == XK_Alt_R ||
+        s == XK_Super_L ||
+        s == XK_Super_R ||
+        s == XK_Hyper_L ||
+        s == XK_Hyper_R);
+}
+
+void
+keypress_other(const Arg *arg)
+{
+    if (grabkeyboard())
+        return;
+
+    XEvent ev;
+    while (!XNextEvent(dpy, &ev)) {
+        if (ev.type == ButtonPress)
+            break;
+        if (ev.type == KeyPress) {
+            KeySym keysym = XKeycodeToKeysym(dpy, (KeyCode)ev.xkey.keycode, 0);
+            if (keysym_is_modifier(keysym))
+                continue;
+            keypress_r(&ev, (Key*)arg->v);
+            break;
+        }
+    }
+
+    XUngrabKeyboard(dpy, CurrentTime);
+    grabkeys();
+}
+
+void
+keypress(XEvent *e)
+{
+    keypress_r(e,keys);
+ }
 
 void
 killclient(const Arg *arg)
