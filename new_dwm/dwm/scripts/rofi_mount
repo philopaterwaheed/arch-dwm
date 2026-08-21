@@ -1,0 +1,318 @@
+#!/usr/bin/env bash
+##
+## Rofi mount menu -- list every mountable block device, then pick a mount point
+## for the one you chose. Uses udisksctl when available, pkexec mount otherwise.
+
+set -o pipefail
+
+DIR='/home/philosan/dwm/theme/rofi'
+RASI="$DIR/mount.rasi"
+
+# Directories scanned for ready-made mount points.
+SEARCH_DIRS=(/mnt /media "/run/media/$USER" "$HOME/mnt" "$HOME/media")
+
+# Devices sitting on these mount points are listed but can only be opened,
+# never unmounted, so the menu can't pull the running system apart.
+PROTECTED_MOUNTS=(/ /boot /boot/efi /efi /usr /var /home /nix /run /tmp /.snapshots)
+PROTECTED_TREES=(/boot /efi /usr /var /etc /nix)
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+notify() {
+	local icon="$1" title="$2" body="$3"
+	if have dunstify; then
+		dunstify -u low -h string:x-dunst-stack-tag:rofimount -i "$icon" "$title" "$body"
+	else
+		notify-send -u low -i "$icon" "$title" "$body"
+	fi
+}
+
+# rofi_menu <prompt> [extra rofi args...] -- rows come from stdin
+rofi_menu() {
+	local prompt="$1"; shift
+	rofi -dmenu -i -p "$prompt" -theme "$RASI" \
+		-theme-str 'window {width: 780px;} listview {lines: 10;}' "$@"
+}
+
+is_protected() {
+	local mp="$1" p
+	for p in "${PROTECTED_MOUNTS[@]}"; do
+		[[ "$mp" == "$p" ]] && return 0
+	done
+	for p in "${PROTECTED_TREES[@]}"; do
+		[[ "$mp" == "$p"/* ]] && return 0
+	done
+	return 1
+}
+
+##----- Device list ------------------------------------------------------------
+
+declare -a d_dev d_fs d_label d_mnt d_row d_removable d_protected
+
+collect_devices() {
+	local line rest fs mnt name icon label desc status protected removable
+	local -A f
+
+	while IFS= read -r line; do
+		f=()
+		rest="$line"
+		while [[ "$rest" =~ ^[[:space:]]*([A-Z_]+)=\"([^\"]*)\"(.*)$ ]]; do
+			f["${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
+			rest="${BASH_REMATCH[3]}"
+		done
+
+		fs="${f[FSTYPE]}"
+		mnt="${f[MOUNTPOINT]}"
+
+		case "${f[TYPE]}" in
+			part|rom|lvm|crypt|md) ;;
+			disk) [[ -n "$fs" ]] || continue ;;  # whole-disk filesystem, no table
+			*) continue ;;
+		esac
+
+		[[ -n "$fs" ]] || continue
+		case "$fs" in
+			swap|LVM2_member|linux_raid_member|zfs_member) continue ;;
+		esac
+
+		if [[ "${f[TYPE]}" == rom ]]; then
+			icon='󰗮'
+		elif [[ "$fs" == crypto_LUKS ]]; then
+			icon=''
+		elif [[ "${f[RM]}" == 1 || "${f[HOTPLUG]}" == 1 ]]; then
+			icon=''
+		else
+			icon='󰋊'
+		fi
+
+		label="${f[LABEL]}"
+		desc="${label:-${f[MODEL]}}"
+
+		protected=0
+		if [[ -n "$mnt" ]]; then
+			status="  $mnt"
+			if is_protected "$mnt"; then
+				protected=1
+				status+='  (system)'
+			fi
+		elif [[ "$fs" == crypto_LUKS ]]; then
+			status='  locked'
+		else
+			status=''
+		fi
+
+		removable=no
+		[[ "${f[RM]}" == 1 || "${f[HOTPLUG]}" == 1 ]] && removable=yes
+
+		name="${f[NAME]#/dev/}"
+		d_dev+=("${f[NAME]}")
+		d_fs+=("$fs")
+		d_label+=("$label")
+		d_mnt+=("$mnt")
+		d_removable+=("$removable")
+		d_protected+=("$protected")
+		d_row+=("$(printf '%s  %-12s %8s  %-11s %-24s%s' \
+			"$icon" "$name" "${f[SIZE]}" "$fs" "${desc:0:22}" "$status")")
+	done < <(lsblk -Ppo NAME,TYPE,SIZE,FSTYPE,LABEL,MOUNTPOINT,RM,HOTPLUG,MODEL 2>/dev/null)
+}
+
+##----- Mount point choices ---------------------------------------------------
+
+# Fills mp_row (what rofi shows) and mp_val (auto / ask / the target directory)
+# with the existing directories under SEARCH_DIRS plus a device-named suggestion.
+declare -a mp_row mp_val
+
+mountpoint_options() {
+	local suggestion="$1" dir sub
+	mp_row=() mp_val=()
+
+	if have udisksctl; then
+		mp_row+=("  Auto   (/run/media/$USER/…)"); mp_val+=('auto')
+	fi
+	if [[ -d /mnt ]]; then
+		mp_row+=("  /mnt/$suggestion   (new)"); mp_val+=("/mnt/$suggestion")
+	fi
+
+	for dir in "${SEARCH_DIRS[@]}"; do
+		[[ -d "$dir" ]] || continue
+		for sub in "$dir"/*/; do
+			sub="${sub%/}"
+			[[ -d "$sub" ]] || continue
+			[[ "$sub" == "/mnt/$suggestion" ]] && continue
+			if mountpoint -q "$sub" 2>/dev/null; then
+				mp_row+=("  $sub   (busy)")
+			else
+				mp_row+=("  $sub")
+			fi
+			mp_val+=("$sub")
+		done
+	done
+
+	mp_row+=("  Type a path…"); mp_val+=('ask')
+}
+
+##----- Actions ---------------------------------------------------------------
+
+mount_auto() {
+	local dev="$1" out rc
+	out=$(udisksctl mount -b "$dev" 2>&1)
+	rc=$?
+	if (( rc == 0 )); then
+		notify drive-removable-media 'Mounted' "${out#Mounted }"
+	else
+		notify dialog-error 'Mount failed' "$out"
+	fi
+	return $rc
+}
+
+mount_at() {
+	local dev="$1" fs="$2" mp="$3" opts='' out rc
+	if ! have pkexec; then
+		notify dialog-error 'Mount' 'pkexec (polkit) is required to mount at a chosen path'
+		return 1
+	fi
+	case "$fs" in
+		vfat|msdos|exfat|ntfs|ntfs3|hfsplus) opts="uid=$(id -u),gid=$(id -g)" ;;
+	esac
+
+	if [[ -n "$opts" ]]; then
+		out=$(pkexec /bin/sh -c 'mkdir -p "$3" && exec mount -o "$1" -- "$2" "$3"' \
+			_ "$opts" "$dev" "$mp" 2>&1)
+	else
+		out=$(pkexec /bin/sh -c 'mkdir -p "$2" && exec mount -- "$1" "$2"' \
+			_ "$dev" "$mp" 2>&1)
+	fi
+	rc=$?
+
+	if (( rc == 0 )); then
+		notify drive-harddisk 'Mounted' "$dev  →  $mp"
+	else
+		notify dialog-error 'Mount failed' "${out:-pkexec exited $rc}"
+	fi
+	return $rc
+}
+
+unmount_dev() {
+	local dev="$1" mp="$2" out rc
+	if [[ "$mp" == /run/media/* ]] && have udisksctl; then
+		out=$(udisksctl unmount -b "$dev" 2>&1)
+	else
+		out=$(pkexec /bin/sh -c 'exec umount -- "$1"' _ "$dev" 2>&1)
+	fi
+	rc=$?
+
+	if (( rc == 0 )); then
+		notify media-eject 'Unmounted' "$dev  ($mp)"
+	else
+		notify dialog-error 'Unmount failed' "${out:-exited $rc}"
+	fi
+	return $rc
+}
+
+power_off_dev() {
+	local dev="$1" parent out
+	parent=$(lsblk -no PKNAME "$dev" 2>/dev/null | head -n1)
+	[[ -n "$parent" ]] && parent="/dev/$parent" || parent="$dev"
+	out=$(udisksctl power-off -b "$parent" 2>&1) \
+		&& notify media-eject 'Safe to remove' "$parent" \
+		|| notify dialog-error 'Power off failed' "$out"
+}
+
+##----- Menus -----------------------------------------------------------------
+
+mounted_menu() {
+	local dev="$1" mp="$2" removable="$3" protected="$4"
+	local -a rows=("  Open   $mp") acts=(open)
+	if (( protected )); then
+		rows+=("  System mount, will not be unmounted"); acts+=(nothing)
+	else
+		rows+=("  Unmount"); acts+=(unmount)
+		if [[ "$removable" == yes ]] && have udisksctl; then
+			rows+=("  Unmount & power off"); acts+=(poweroff)
+		fi
+	fi
+
+	local choice
+	choice=$(printf '%s\n' "${rows[@]}" | rofi_menu 'Mounted' -format i -no-custom)
+	[[ -n "$choice" ]] || exit 0
+
+	case "${acts[$choice]}" in
+		open)     setsid xdg-open "$mp" >/dev/null 2>&1 & ;;
+		unmount)  unmount_dev "$dev" "$mp" ;;
+		poweroff) unmount_dev "$dev" "$mp" && power_off_dev "$dev" ;;
+	esac
+}
+
+unlock_menu() {
+	local dev="$1" out
+	if ! have udisksctl; then
+		notify dialog-error 'Mount' "$dev is encrypted and udisksctl is not installed"
+		exit 1
+	fi
+	out=$(udisksctl unlock -b "$dev" 2>&1) \
+		&& notify drive-removable-media 'Unlocked' "${out#Unlocked }" \
+		|| notify dialog-error 'Unlock failed' "$out"
+}
+
+mount_menu() {
+	local dev="$1" fs="$2" label="$3"
+	local suggestion="${label:-${dev#/dev/}}"
+	suggestion="${suggestion// /_}"
+
+	mountpoint_options "$suggestion"
+
+	local choice target
+	choice=$(printf '%s\n' "${mp_row[@]}" | rofi_menu "Mount ${dev#/dev/} at" -format i -no-custom)
+	[[ -n "$choice" ]] || exit 0
+	target="${mp_val[$choice]}"
+
+	if [[ "$target" == auto ]]; then
+		mount_auto "$dev"
+		return
+	fi
+
+	if [[ "$target" == ask ]]; then
+		target=$(rofi -dmenu -p 'Mount point' -theme "$RASI" \
+			-theme-str 'window {width: 600px;} listview {enabled: false;}' <<< '')
+		target="${target#"${target%%[![:space:]]*}"}"
+		target="${target%"${target##*[![:space:]]}"}"
+		[[ -n "$target" ]] || exit 0
+		target="${target/#\~/$HOME}"
+		if [[ "$target" != /* ]]; then
+			notify dialog-error 'Mount' 'Mount point must be an absolute path'
+			exit 1
+		fi
+	fi
+
+	mount_at "$dev" "$fs" "${target%/}"
+}
+
+##----- Main ------------------------------------------------------------------
+
+for bin in rofi lsblk; do
+	have "$bin" || { echo "rofi_mount: $bin is required" >&2; exit 1; }
+done
+
+collect_devices
+
+if (( ${#d_dev[@]} == 0 )); then
+	notify dialog-information 'Mount' 'No mountable devices found'
+	exit 0
+fi
+
+# -format i keeps the selection tied to a row index, so two identically
+# labelled devices can never be mixed up.
+sel=$(printf '%s\n' "${d_row[@]}" | rofi_menu 'Devices' -format i -no-custom)
+[[ -n "$sel" ]] || exit 0
+
+dev="${d_dev[$sel]}"
+fs="${d_fs[$sel]}"
+mnt="${d_mnt[$sel]}"
+
+if [[ -n "$mnt" ]]; then
+	mounted_menu "$dev" "$mnt" "${d_removable[$sel]}" "${d_protected[$sel]}"
+elif [[ "$fs" == crypto_LUKS ]]; then
+	unlock_menu "$dev"
+else
+	mount_menu "$dev" "$fs" "${d_label[$sel]}"
+fi
