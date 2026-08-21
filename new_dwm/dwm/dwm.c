@@ -195,6 +195,7 @@ static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
+static void keypress_other(const Arg *arg);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
@@ -1245,7 +1246,7 @@ keysym_is_modifier(KeySym s)
         s == XK_Hyper_R);
 }
 
-void
+static void
 keypress_other(const Arg *arg)
 {
     if (grabkeyboard())
