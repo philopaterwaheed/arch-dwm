@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+##
+## Rofi menu of dunst's notification history.
+## Enter redisplays the chosen toast; Alt+c copies it.
+
+set -o pipefail
+
+DIR='/home/philosan/dwm/theme/rofi'
+RASI="$DIR/windows.rasi"
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+notify() {
+	local icon="$1" title="$2" body="$3"
+	if have dunstify; then
+		dunstify -u low -h string:x-dunst-stack-tag:notifhist -i "$icon" "$title" "$body"
+	else
+		notify-send -u low -i "$icon" "$title" "$body"
+	fi
+}
+
+copy_text() {
+	local text="$1"
+	if have xclip; then
+		printf '%s' "$text" | xclip -selection clipboard
+	elif have xsel; then
+		printf '%s' "$text" | xsel --clipboard --input
+	else
+		notify dialog-error 'Notifications' 'xclip or xsel is required to copy'
+		return 1
+	fi
+}
+
+if ! have dunstctl; then
+	notify dialog-error 'Notifications' 'dunstctl is not installed'
+	exit 1
+fi
+if ! have python3; then
+	notify dialog-error 'Notifications' 'python3 is required to read history'
+	exit 1
+fi
+
+mapfile -t records < <(python3 - <<'PY'
+import json, re, subprocess, sys
+
+def field(n, key, default=""):
+    v = n.get(key, {})
+    if isinstance(v, dict):
+        v = v.get("data", default)
+    return "" if v is None else str(v)
+
+def one_line(s, limit):
+    s = re.sub(r"<[^>]+>", "", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s if len(s) <= limit else s[: limit - 1] + "…"
+
+try:
+    raw = subprocess.check_output(["dunstctl", "history"], text=True)
+    data = json.loads(raw)
+except (subprocess.CalledProcessError, json.JSONDecodeError, FileNotFoundError):
+    sys.exit(0)
+
+root = data.get("data", [])
+items = root[0] if root and isinstance(root[0], list) else root
+if not isinstance(items, list):
+    sys.exit(0)
+
+for n in reversed(items):
+    nid = field(n, "id")
+    if not nid:
+        continue
+    app = one_line(field(n, "appname") or "app", 16)
+    summary = field(n, "summary")
+    body = field(n, "body")
+    copy = (summary + (("\n" + body) if body else "")).strip()
+    copy = copy.replace("\t", " ")
+    shown = f"{app:<16}  {one_line(summary, 48)}"
+    body_line = one_line(body, 64)
+    if body_line and body_line != one_line(summary, 64):
+        shown += f"  —  {body_line}"
+    print(f"{nid}\t{shown}\t{copy}")
+PY
+)
+
+ids=() rows=() copies=()
+ids+=("ALL")
+rows+=("  Show all")
+copies+=("")
+
+for rec in "${records[@]}"; do
+	ids+=("${rec%%$'\t'*}")
+	rest="${rec#*$'\t'}"
+	rows+=("${rest%%$'\t'*}")
+	copies+=("${rest#*$'\t'}")
+done
+
+if (( ${#records[@]} == 0 )); then
+	notify dialog-information 'Notifications' 'No notifications in history'
+	exit 0
+fi
+
+idx=$(printf '%s\n' "${rows[@]}" | rofi -dmenu -i -p 'Notifications' \
+	-theme "$RASI" \
+	-theme-str 'window {width: 780px;} listview {lines: 10;} textbox-prompt-colon {str: "󰂚";}' \
+	-format i -no-custom \
+	-kb-custom-1 'Alt+c')
+rofi_rc=$?
+
+[[ -n "$idx" ]] || exit 0
+
+case "$rofi_rc" in
+	10)
+		if [[ "${ids[$idx]}" == ALL ]]; then
+			text=$(printf '%s\n' "${copies[@]:1}")
+		else
+			text="${copies[$idx]}"
+		fi
+		[[ -n "$text" ]] || exit 0
+		copy_text "$text" && notify edit-copy 'Copied' "${rows[$idx]}"
+		;;
+	0)
+		if [[ "${ids[$idx]}" == ALL ]]; then
+			for id in "${ids[@]:1}"; do
+				dunstctl history-pop "$id" >/dev/null 2>&1 || true
+			done
+		else
+			dunstctl history-pop "${ids[$idx]}" >/dev/null 2>&1 || true
+		fi
+		;;
+esac

@@ -99,7 +99,7 @@ static const char *nvimcmd[]         = { "st", "-e", "nvim", NULL };
 static const char *vscodecmd[]       = { "code", NULL };
 static const char *lockcmd[]         = { "slock", NULL };
 static const char *filemgr[]         = { "thunar", NULL };
-static const char *dunsthist[]       = { "dunstctl", "history-pop", NULL };
+static const char *dunsthist[]       = { "/home/philosan/dwm/scripts/rofi_notifications", NULL };
 static const char *dunstpause[]      = { "dunstctl", "set-paused", "toggle", NULL };
 
 /* menus / scripts */
