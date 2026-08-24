@@ -2,70 +2,207 @@
 
 ## Copyright (C) 2020-2025 Aditya Shakya <adi1090x@gmail.com>
 ##
-## Script to manage speaker volume on Archcraft.
+## Script to manage volume. On SOF/UCM laptops, speakers and headphones
+## are separate card profiles, so this switches to the plugged-in output
+## before changing volume or mute.
 
 # Icons
 iDIR='/home/philosan/dwm/icons/dunst'
 notify_cmd='dunstify -u low -h string:x-dunst-stack-tag:obvolume'
 
-# Get Volume
-get_volume() {
-	echo "`pulsemixer --get-volume | cut -d' ' -f1`"
+analog_card() {
+	pactl list short cards 2>/dev/null | awk '$2 !~ /bluez/ {print $2; exit}'
 }
 
-# Get icons
+card_profile() {
+	local needle="$1"
+	pactl list cards 2>/dev/null | awk -v needle="$needle" '
+		/Profiles:/ {p=1; next}
+		/Active Profile:/ {p=0}
+		p {
+			line=$0
+			sub(/^[[:space:]]+/, "", line)
+			name=line
+			sub(/: .*/, "", name)
+			if (name ~ needle) {
+				print name
+				exit
+			}
+		}
+	'
+}
+
+active_profile() {
+	pactl list cards 2>/dev/null | awk '/Active Profile:/ {
+		sub(/.*Active Profile:[[:space:]]+/, "")
+		print
+		exit
+	}'
+}
+
+headphones_plugged() {
+	pactl list cards 2>/dev/null | grep '\[Out\] Headphones' | grep -qv 'not available'
+}
+
+find_sink() {
+	local needle="$1"
+	pactl list short sinks 2>/dev/null | awk -v n="$needle" '$2 ~ n {print $2; exit}'
+}
+
+wait_for_sink() {
+	local needle="$1"
+	local sink
+	local i
+	for i in $(seq 1 20); do
+		sink="$(find_sink "$needle")"
+		if [[ -n "$sink" ]]; then
+			printf '%s\n' "$sink"
+			return 0
+		fi
+		sleep 0.05
+	done
+	return 1
+}
+
+move_streams() {
+	local sink="$1"
+	local id
+	pactl list short sink-inputs 2>/dev/null | awk '{print $1}' | while read -r id; do
+		pactl move-sink-input "$id" "$sink" >/dev/null 2>&1 || true
+	done
+}
+
+# Speakers and headphones are mutually exclusive UCM profiles. Mute on the
+# speaker sink is a hardware mute that also silences headphones, so always
+# activate the jack that is actually in use before touching volume.
+ensure_output() {
+	local default card want_profile want_sink sink
+	default="$(pactl get-default-sink 2>/dev/null)" || return 0
+
+	case "$default" in
+		*bluez*|*BlueZ*|*usb-*|*USB*|*HDMI*)
+			return 0
+			;;
+	esac
+
+	card="$(analog_card)"
+	[[ -n "$card" ]] || return 0
+
+	if headphones_plugged; then
+		want_profile="$(card_profile 'Headphones')"
+		want_sink='Headphones'
+	else
+		want_profile="$(card_profile 'Speaker')"
+		want_sink='Speaker'
+	fi
+	[[ -n "$want_profile" ]] || return 0
+
+	if [[ "$(active_profile)" != "$want_profile" ]]; then
+		pactl set-card-profile "$card" "$want_profile" >/dev/null 2>&1 || return 0
+	fi
+
+	sink="$(wait_for_sink "$want_sink")" || return 0
+	if [[ "$(pactl get-default-sink 2>/dev/null)" != "$sink" ]]; then
+		pactl set-default-sink "$sink" >/dev/null 2>&1 || true
+	fi
+	move_streams "$sink"
+}
+
+output_label() {
+	local sink
+	sink="$(pactl get-default-sink 2>/dev/null)"
+	case "$sink" in
+		*Headphones*) echo "Headphones" ;;
+		*Speaker*)    echo "Speaker" ;;
+		*bluez*)      echo "Bluetooth" ;;
+		*HDMI*)       echo "HDMI" ;;
+		*)            echo "Volume" ;;
+	esac
+}
+
+get_volume() {
+	local vol
+	vol="$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | awk 'NR==1 {gsub(/%/, "", $5); print $5; exit}')"
+	[[ "$vol" =~ ^[0-9]+$ ]] || vol=0
+	echo "$vol"
+}
+
+is_muted() {
+	pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | awk '{print $2}'
+}
+
 get_icon() {
+	local current
 	current="$(get_volume)"
-	if [[ "$current" -eq "0" ]]; then
+	if [[ "$(is_muted)" == "yes" ]] || [[ "$current" -eq 0 ]]; then
 		icon="$iDIR/volume-mute.png"
-	elif [[ ("$current" -ge "0") && ("$current" -le "30") ]]; then
+	elif [[ "$current" -le 30 ]]; then
 		icon="$iDIR/volume-low.png"
-	elif [[ ("$current" -ge "30") && ("$current" -le "60") ]]; then
+	elif [[ "$current" -le 60 ]]; then
 		icon="$iDIR/volume-mid.png"
-	elif [[ ("$current" -ge "60") && ("$current" -le "100") ]]; then
+	else
 		icon="$iDIR/volume-high.png"
 	fi
 }
 
-# Notify
 notify_user() {
-	${notify_cmd} -i "$icon" "Volume : $(get_volume)%"
+	${notify_cmd} -i "$icon" "$(output_label) : $(get_volume)%"
 }
 
-# Increase Volume
+clamp_volume() {
+	local vol
+	vol="$(get_volume)"
+	if [[ "$vol" -gt 100 ]]; then
+		pactl set-sink-volume @DEFAULT_SINK@ 100%
+	fi
+}
+
 inc_volume() {
-	[[ `pulsemixer --get-mute` == 1 ]] && pulsemixer --unmute
-	pulsemixer --max-volume 100 --change-volume +5 && get_icon && notify_user
+	ensure_output
+	pactl set-sink-mute @DEFAULT_SINK@ 0
+	if [[ "$(get_volume)" -ge 100 ]]; then
+		get_icon && notify_user
+		return
+	fi
+	pactl set-sink-volume @DEFAULT_SINK@ +5%
+	clamp_volume
+	get_icon && notify_user
 }
 
-# Decrease Volume
 dec_volume() {
-	[[ `pulsemixer --get-mute` == 1 ]] && pulsemixer --unmute
-	pulsemixer --max-volume 100 --change-volume -5 && get_icon && notify_user
+	ensure_output
+	pactl set-sink-mute @DEFAULT_SINK@ 0
+	pactl set-sink-volume @DEFAULT_SINK@ -5%
+	get_icon && notify_user
 }
 
-# Toggle Mute
 toggle_mute() {
-	if [[ `pulsemixer --get-mute` == 0 ]]; then
-		pulsemixer --toggle-mute && ${notify_cmd} -i "$iDIR/volume-mute.png" "Mute"
+	ensure_output
+	pactl set-sink-mute @DEFAULT_SINK@ toggle
+	if [[ "$(is_muted)" == "yes" ]]; then
+		${notify_cmd} -i "$iDIR/volume-mute.png" "$(output_label) muted"
 	else
-		pulsemixer --toggle-mute && get_icon && ${notify_cmd} -i "$icon" "Unmute"
+		get_icon
+		${notify_cmd} -i "$icon" "$(output_label) unmuted"
 	fi
 }
 
-# Toggle Mic
 toggle_mic() {
-	ID="`pulsemixer --list-sources | grep 'Default' | cut -d',' -f1 | cut -d' ' -f3`"
-	if [[ `pulsemixer --id $ID --get-mute` == 0 ]]; then
-		pulsemixer --id ${ID} --toggle-mute && ${notify_cmd} -i "$iDIR/microphone-mute.png" "Microphone Switched OFF"
+	local src mute
+	src="$(pactl get-default-source 2>/dev/null)"
+	[[ -n "$src" ]] || return
+	pactl set-source-mute "$src" toggle
+	mute="$(pactl get-source-mute "$src" | awk '{print $2}')"
+	if [[ "$mute" == "yes" ]]; then
+		${notify_cmd} -i "$iDIR/microphone-mute.png" "Microphone Switched OFF"
 	else
-		pulsemixer --id ${ID} --toggle-mute && ${notify_cmd} -i "$iDIR/microphone.png" "Microphone Switched ON"
+		${notify_cmd} -i "$iDIR/microphone.png" "Microphone Switched ON"
 	fi
 }
 
-# Execute accordingly
-if [[ -x `which pulsemixer` ]]; then
+if [[ -x $(command -v pactl) ]]; then
 	if [[ "$1" == "--get" ]]; then
+		ensure_output
 		get_volume
 	elif [[ "$1" == "--inc" ]]; then
 		inc_volume
@@ -76,8 +213,9 @@ if [[ -x `which pulsemixer` ]]; then
 	elif [[ "$1" == "--toggle-mic" ]]; then
 		toggle_mic
 	else
-		echo $(get_volume)%
+		ensure_output
+		echo "$(get_volume)%"
 	fi
 else
-	${notify_cmd} "'pulsemixer' is not installed."
+	${notify_cmd} "'pactl' is not installed."
 fi
