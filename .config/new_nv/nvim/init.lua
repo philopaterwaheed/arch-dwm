@@ -21,9 +21,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
 })
 
--- Treesitter config (needed early for syntax highlighting)
-require("philo.tree_setter")
-
 -- Git integration (deferred, not needed immediately)
 vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()

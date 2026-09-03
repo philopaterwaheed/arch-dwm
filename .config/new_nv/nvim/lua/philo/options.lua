@@ -16,6 +16,7 @@ opt.cursorline = true        -- Highlight current line
 opt.signcolumn = "yes"       -- Always show sign column (prevents layout shift)
 opt.wrap = false             -- Don't wrap lines
 opt.termguicolors = true     -- True color support
+opt.winborder = "rounded"    -- Default border for hover, signature, and other floats
 opt.showmode = false         -- Don't show mode (statusline handles it)
 opt.pumheight = 10           -- Popup menu height
 opt.scrolloff = 8            -- Lines to keep above/below cursor

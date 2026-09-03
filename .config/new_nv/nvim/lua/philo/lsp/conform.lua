@@ -40,7 +40,7 @@ M.setup = function()
     },
     -- Format on save (optional - uncomment to enable)
     -- format_on_save = {
-    --   lsp_fallback = true,
+    --   lsp_format = "fallback",
     --   async = false,
     --   timeout_ms = 500,
     -- },
@@ -49,7 +49,7 @@ M.setup = function()
   -- Manual format keymap
   vim.keymap.set({ "n", "v" }, "<leader>mp", function()
     conform.format({
-      lsp_fallback = true,
+      lsp_format = "fallback",
       async = false,
       timeout_ms = 500,
     })

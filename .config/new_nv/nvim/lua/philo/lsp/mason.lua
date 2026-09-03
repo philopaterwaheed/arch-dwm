@@ -21,7 +21,8 @@ M.setup = function()
     return
   end
 
-  -- Servers to auto-install
+  -- Pre-install these on first launch. Any other server: :Mason or :LspInstall
+  -- and it will attach automatically (no extra vim.lsp.enable() needed).
   local servers = {
     "clangd",       -- C/C++
     "pylsp",        -- Python
@@ -47,7 +48,7 @@ M.setup = function()
 
   mason_lspconfig.setup({
     ensure_installed = servers,
-    automatic_installation = true,
+    automatic_enable = true, -- vim.lsp.enable() every Mason-installed server
   })
 end
 

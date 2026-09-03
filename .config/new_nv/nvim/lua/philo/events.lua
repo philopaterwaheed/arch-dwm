@@ -14,7 +14,7 @@ autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
   group = augroup("highlight-yank", { clear = true }),
   callback = function()
-    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+    vim.hl.on_yank({ higroup = "IncSearch", timeout = 200 })
   end,
 })
 
@@ -38,7 +38,7 @@ autocmd("FileType", {
   pattern = { "help", "lspinfo", "man", "notify", "qf", "checkhealth" },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buf = event.buf, silent = true })
   end,
 })
 
@@ -77,6 +77,6 @@ autocmd("BufWritePre", {
 --   desc = "Format on save",
 --   group = augroup("format-on-save", { clear = true }),
 --   callback = function()
---     require("conform").format({ lsp_fallback = true, async = false, timeout_ms = 500 })
+--     require("conform").format({ lsp_format = "fallback", async = false, timeout_ms = 500 })
 --   end,
 -- })

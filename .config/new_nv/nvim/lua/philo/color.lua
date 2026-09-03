@@ -1,8 +1,8 @@
 --[[
   Colorizer Configuration
-  
+
   Highlights color codes in files (hex, rgb, etc.)
-  Only enabled for relevant filetypes for performance
+  Maintained fork: https://github.com/catgoose/nvim-colorizer.lua
 --]]
 
 local M = {}
@@ -14,13 +14,15 @@ M.setup = function()
   end
 
   colorizer.setup({
-    "css",
-    "html",
-    "javascript",
-    "typescript",
-    "lua",
-    css = { rgb_fn = true },  -- Enable parsing rgb(...) functions
-    html = { names = false }, -- Disable parsing color names
+    filetypes = {
+      "css",
+      "html",
+      "javascript",
+      "typescript",
+      "lua",
+      css = { rgb_fn = true },
+      html = { names = false },
+    },
   })
 end
 

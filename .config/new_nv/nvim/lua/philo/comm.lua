@@ -1,11 +1,8 @@
 --[[
   Comment.nvim Configuration
-  
-  Provides:
-  - gcc to toggle line comment
-  - gc to toggle selection comment
-  - gbc for block comment
-  - Treesitter integration for JSX/TSX
+
+  Upstream Comment.nvim + nvim-ts-context-commentstring integration:
+  https://github.com/JoosepAlviste/nvim-ts-context-commentstring/wiki/Integrations#commentnvim
 --]]
 
 local M = {}
@@ -16,12 +13,19 @@ M.setup = function()
     return
   end
 
-  -- Check if ts_context_commentstring is available
-  local ts_context_ok, ts_context = pcall(require, "ts_context_commentstring.integrations.comment_nvim")
+  local ts_context_ok, ts_context = pcall(require, "ts_context_commentstring")
+  if ts_context_ok then
+    ts_context.setup({ enable_autocmd = false })
+  end
+
+  local pre_hook
+  local integration_ok, integration = pcall(require, "ts_context_commentstring.integrations.comment_nvim")
+  if integration_ok then
+    pre_hook = integration.create_pre_hook()
+  end
 
   comment.setup({
-    -- Use treesitter for determining comment style (JSX, TSX, etc.)
-    pre_hook = ts_context_ok and ts_context.create_pre_hook() or nil,
+    pre_hook = pre_hook,
   })
 end
 

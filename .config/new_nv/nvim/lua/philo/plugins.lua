@@ -33,12 +33,13 @@ local plugins = {
   ---------------------------------------------------------------------------
   -- UI Components
   ---------------------------------------------------------------------------
-  { "kyazdani42/nvim-web-devicons", lazy = true }, -- Icons for various plugins
+  { "nvim-tree/nvim-web-devicons", lazy = true }, -- Icons for various plugins
 
   -- File Explorer
   {
-    "kyazdani42/nvim-tree.lua",
+    "nvim-tree/nvim-tree.lua",
     cmd = "NvimTreeToggle",
+    keys = { { "<leader>n", "<cmd>NvimTreeToggle<cr>", desc = "Toggle file explorer" } },
     config = function()
       require("philo.nvim-tree").setup()
     end,
@@ -49,7 +50,36 @@ local plugins = {
     "akinsho/toggleterm.nvim",
     version = "*",
     cmd = { "ToggleTerm", "TermExec" },
-    keys = { { "<C-\\>", desc = "Toggle Terminal" } },
+    keys = {
+      { "<C-\\>", desc = "Toggle Terminal" },
+      { "<leader>gg", desc = "Lazygit" },
+      { "<leader>tp", desc = "Python REPL" },
+      { "<leader>tn", desc = "Node REPL" },
+      {
+        "<leader>xf",
+        function()
+          local ft = vim.bo.filetype
+          local file = vim.fn.expand("%:p")
+          local cmds = {
+            python = "python3 " .. file,
+            javascript = "node " .. file,
+            typescript = "ts-node " .. file,
+            lua = "lua " .. file,
+            sh = "bash " .. file,
+            rust = "cargo run",
+            c = "gcc -o /tmp/a.out " .. file .. " && /tmp/a.out",
+            cpp = "g++ -o /tmp/a.out " .. file .. " && /tmp/a.out",
+          }
+          local cmd = cmds[ft]
+          if cmd then
+            vim.cmd("TermExec cmd='" .. cmd .. "'")
+          else
+            vim.notify("No runner for filetype: " .. ft, vim.log.levels.WARN)
+          end
+        end,
+        desc = "Run current file",
+      },
+    },
     config = function()
       require("philo.toggleterm").setup()
     end,
@@ -70,18 +100,19 @@ local plugins = {
   {
     "mbbill/undotree",
     cmd = "UndotreeToggle",
+    keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle undo tree" } },
   },
 
   -- Dashboard/Start screen
   {
-    "glepnir/dashboard-nvim",
+    "nvimdev/dashboard-nvim",
     event = "VimEnter",
-    dependencies = { "nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
   -- Color previewer
   {
-    "norcalli/nvim-colorizer.lua",
+    "catgoose/nvim-colorizer.lua",
     ft = { "css", "html", "javascript", "typescript", "lua" },
     config = function()
       require("philo.color").setup()
@@ -116,6 +147,34 @@ local plugins = {
     "numToStr/Comment.nvim",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    keys = {
+      {
+        "<leader>cc",
+        function()
+          require("Comment.api").toggle.linewise.current()
+        end,
+        desc = "Toggle comment line",
+      },
+      {
+        "<leader>cc",
+        "<Esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>",
+        mode = "v",
+        desc = "Toggle comment",
+      },
+      {
+        "<C-_>",
+        function()
+          require("Comment.api").toggle.linewise.current()
+        end,
+        desc = "Toggle comment",
+      },
+      {
+        "<C-_>",
+        "<Esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>",
+        mode = "v",
+        desc = "Toggle comment",
+      },
+    },
     config = function()
       require("philo.comm").setup()
     end,
@@ -135,11 +194,37 @@ local plugins = {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
-  { "akinsho/bufferline.nvim", event = "VeryLazy", dependencies = { "nvim-web-devicons" } },
-  { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } }, -- Better buffer deletion
+  {
+    "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "<leader>1", "<cmd>BufferLineGoToBuffer 1<cr>", desc = "Go to buffer 1" },
+      { "<leader>2", "<cmd>BufferLineGoToBuffer 2<cr>", desc = "Go to buffer 2" },
+      { "<leader>3", "<cmd>BufferLineGoToBuffer 3<cr>", desc = "Go to buffer 3" },
+      { "<leader>4", "<cmd>BufferLineGoToBuffer 4<cr>", desc = "Go to buffer 4" },
+      { "<leader>5", "<cmd>BufferLineGoToBuffer 5<cr>", desc = "Go to buffer 5" },
+      { "<leader>6", "<cmd>BufferLineGoToBuffer 6<cr>", desc = "Go to buffer 6" },
+      { "<leader>7", "<cmd>BufferLineGoToBuffer 7<cr>", desc = "Go to buffer 7" },
+      { "<leader>8", "<cmd>BufferLineGoToBuffer 8<cr>", desc = "Go to buffer 8" },
+      { "<leader>9", "<cmd>BufferLineGoToBuffer 9<cr>", desc = "Go to buffer 9" },
+      { "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", desc = "Close other buffers" },
+      { "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", desc = "Close buffers to the left" },
+      { "<leader>br", "<cmd>BufferLineCloseRight<cr>", desc = "Close buffers to the right" },
+      { "<leader>bp", "<cmd>BufferLinePick<cr>", desc = "Pick buffer" },
+    },
+  },
+  {
+    "moll/vim-bbye",
+    cmd = { "Bdelete", "Bwipeout" },
+    keys = {
+      { "<leader>bd", "<cmd>Bdelete<cr>", desc = "Delete buffer" },
+      { "<leader><Esc>", "<cmd>Bdelete<cr>", desc = "Delete buffer" },
+    },
+  },
 
   ---------------------------------------------------------------------------
   -- Completion & Snippets
@@ -182,6 +267,18 @@ local plugins = {
       {
         "zbirenbaum/copilot-cmp",
         config = function()
+          -- copilot-cmp still uses client.is_stopped(); Neovim 0.12 wants client:is_stopped()
+          local source = require("copilot_cmp.source")
+          function source.is_available(self)
+            if self.client:is_stopped() or self.client.name ~= "copilot" then
+              return false
+            end
+            local clients = vim.lsp.get_clients({
+              bufnr = vim.api.nvim_get_current_buf(),
+              id = self.client.id,
+            })
+            return next(clients) ~= nil
+          end
           require("copilot_cmp").setup()
         end,
       },
@@ -194,11 +291,16 @@ local plugins = {
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    init = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-    end,
     opts = {},
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
   },
 
   ---------------------------------------------------------------------------
@@ -218,6 +320,9 @@ local plugins = {
     build = ":TSUpdate",
     branch = "master",
     event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("philo.tree_setter")
+    end,
   },
 
   ---------------------------------------------------------------------------
@@ -227,8 +332,8 @@ local plugins = {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason.nvim",
+      "mason-org/mason-lspconfig.nvim",
     },
     config = function()
       require("philo.lsp")
@@ -236,14 +341,14 @@ local plugins = {
   },
 
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     config = function()
       require("philo.lsp.mason").setup()
     end,
   },
 
-  { "williamboman/mason-lspconfig.nvim", lazy = true },
+  { "mason-org/mason-lspconfig.nvim", lazy = true },
 
   -- Java LSP (filetype-specific)
   { "mfussenegger/nvim-jdtls", ft = "java" },
@@ -259,6 +364,60 @@ local plugins = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-media-files.nvim",
     },
+    keys = {
+      {
+        "<leader>ff",
+        function()
+          require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
+        end,
+        desc = "Find files",
+      },
+      {
+        "<leader>F",
+        function()
+          require("telescope.builtin").find_files(require("telescope.themes").get_dropdown({ previewer = false }))
+        end,
+        desc = "Find files",
+      },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+      { "<leader>fw", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Find help" },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
+      { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Fuzzy find in buffer" },
+      { "<leader>gf", "<cmd>Telescope git_files<cr>", desc = "Git files" },
+      { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Git commits" },
+      { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Git branches" },
+      { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Git status" },
+      { "<leader>fW", "<cmd>Telescope grep_string<cr>", desc = "Find word under cursor" },
+      { "<leader>fR", "<cmd>Telescope resume<cr>", desc = "Resume last search" },
+      { "<leader>fc", "<cmd>Telescope command_history<cr>", desc = "Command history" },
+      { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Search keymaps" },
+      {
+        "<leader>fd",
+        function()
+          require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h") })
+        end,
+        desc = "Find files in current dir",
+      },
+      { "<leader>fm", "<cmd>Telescope marks<cr>", desc = "Find marks" },
+      { "<leader>fG", "<cmd>Telescope registers<cr>", desc = "Find registers" },
+      { "<leader>fj", "<cmd>Telescope jumplist<cr>", desc = "Find jumplist" },
+      { "<leader>fs", "<cmd>Telescope treesitter<cr>", desc = "Treesitter symbols" },
+      { "<leader>fH", "<cmd>Telescope highlights<cr>", desc = "Find highlights" },
+      {
+        "<leader>ft",
+        function()
+          require("telescope.builtin").grep_string({ search = "TODO|FIXME|HACK|NOTE|XXX", use_regex = true })
+        end,
+        desc = "Find TODOs",
+      },
+      { "<leader>md", "<cmd>Telescope lsp_definitions<cr>", desc = "Go to definition" },
+      { "<leader>lw", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
+      { "<leader>lo", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document symbols (outline)" },
+      { "<leader>lD", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Buffer diagnostics" },
+      { "<leader>lW", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
+    },
     config = function()
       require("philo.tel").setup()
     end,
@@ -270,6 +429,7 @@ local plugins = {
   {
     "stevearc/conform.nvim",
     event = { "BufReadPre", "BufNewFile" },
+    keys = { { "<leader>mp", desc = "Format file or range", mode = { "n", "v" } } },
     config = function()
       require("philo.lsp.conform").setup()
     end,

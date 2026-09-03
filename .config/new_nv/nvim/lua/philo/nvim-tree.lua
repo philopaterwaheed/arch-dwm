@@ -1,13 +1,29 @@
 --[[
   NvimTree File Explorer Configuration
-  
-  Provides:
-  - File tree sidebar
-  - Git integration
-  - File operations (create, rename, delete)
+
+  Upstream setup: https://github.com/nvim-tree/nvim-tree.lua
 --]]
 
 local M = {}
+
+local function on_attach(bufnr)
+  local api = require("nvim-tree.api")
+
+  local function opts(desc)
+    return { desc = "nvim-tree: " .. desc, buf = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  api.map.on_attach.default(bufnr)
+
+  vim.keymap.set("n", "A", api.tree.expand_all, opts("Expand All"))
+  vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+  vim.keymap.set("n", "C", api.tree.change_root_to_node, opts("CD"))
+  vim.keymap.set("n", "gy", function()
+    local node = api.tree.get_node_under_cursor()
+    print(node.absolute_path)
+  end, opts("Print Node Path"))
+  vim.keymap.set("n", "Z", api.node.run.system, opts("Run System"))
+end
 
 M.setup = function()
   local status_ok, nvim_tree = pcall(require, "nvim-tree")
@@ -16,16 +32,18 @@ M.setup = function()
   end
 
   nvim_tree.setup({
+    on_attach = on_attach,
     auto_reload_on_write = true,
     hijack_cursor = false,
     hijack_netrw = true,
     hijack_unnamed_buffer_when_opening = false,
-    sort_by = "name",
     sync_root_with_cwd = false,
     respect_buf_cwd = false,
-    
-    -- Use the on_attach defined in keymaps.lua
-    on_attach = _G.nvim_tree_on_attach or "default",
+
+    sort = {
+      sorter = "name",
+      folders_first = true,
+    },
 
     view = {
       width = 34,
@@ -39,7 +57,7 @@ M.setup = function()
     renderer = {
       add_trailing = false,
       group_empty = false,
-      highlight_git = true,
+      highlight_git = "name",
       full_name = false,
       highlight_opened_files = "name",
       indent_width = 2,
@@ -54,9 +72,12 @@ M.setup = function()
         },
       },
       icons = {
-        webdev_colors = true,
+        web_devicons = {
+          file = { enable = true, color = true },
+          folder = { enable = false, color = true },
+        },
         git_placement = "before",
-        padding = " ",
+        padding = { icon = " " },
         symlink_arrow = " ➛ ",
         show = {
           file = true,
@@ -64,31 +85,6 @@ M.setup = function()
           folder_arrow = true,
           git = true,
           modified = true,
-        },
-        glyphs = {
-          default = "",
-          symlink = "",
-          bookmark = "",
-          modified = "●",
-          folder = {
-            arrow_closed = "",
-            arrow_open = "",
-            default = "",
-            open = "",
-            empty = "",
-            empty_open = "",
-            symlink = "",
-            symlink_open = "",
-          },
-          git = {
-            unstaged = "✗",
-            staged = "✓",
-            unmerged = "",
-            renamed = "➜",
-            untracked = "★",
-            deleted = "",
-            ignored = "◌",
-          },
         },
       },
       special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
@@ -101,18 +97,20 @@ M.setup = function()
 
     update_focused_file = {
       enable = true,
-      update_root = false,
-      ignore_list = {},
+      update_root = {
+        enable = false,
+        ignore_list = {},
+      },
     },
 
-  diagnostics = {
+    diagnostics = {
       enable = false,
       show_on_dirs = false,
       show_on_open_dirs = true,
       debounce_delay = 50,
       severity = {
         min = vim.diagnostic.severity.HINT,
-        max = vim.diagnostic.severity.ERROR
+        max = vim.diagnostic.severity.ERROR,
       },
       icons = {
         hint = "💡",
@@ -121,14 +119,15 @@ M.setup = function()
         error = "❌",
       },
     },
+
     filters = {
+      git_ignored = false,
       dotfiles = false,
       custom = { ".DS_Store", "__pycache__", ".pytest_cache" },
     },
 
     git = {
       enable = true,
-      ignore = false,
       show_on_dirs = true,
       timeout = 400,
     },
