@@ -143,9 +143,6 @@ map("n", "<leader>sx", "<cmd>close<cr>", { desc = "Close current split" })
 -------------------------------------------------------------------------------
 -- Enhanced Search & Replace
 -------------------------------------------------------------------------------
--- Clear search highlight
-map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
-
 -- Search and replace word under cursor
 map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
 
@@ -358,10 +355,6 @@ map("i", "<C-s>", "<Esc><cmd>w<cr>", { desc = "Save file" })
 
 -- Undo from insert mode
 map("i", "<C-z>", "<C-o>u", { desc = "Undo" })
-
--- Quick way to add semicolon/comma at end of line
-map("i", "<C-;>", "<End>;", { desc = "Add semicolon at EOL" })
-map("i", "<C-,>", "<End>,", { desc = "Add comma at EOL" })
 
 -- Jump to end of line in insert mode (more ergonomic than <End>)
 map("i", "<C-e>", "<End>", { desc = "Go to end of line" })

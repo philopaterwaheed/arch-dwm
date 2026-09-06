@@ -286,7 +286,6 @@ Plugin defaults `gcc` / `gc` (linewise) and `gbc` / `gb` (block) still work.
 | `<C-e>` / `<C-a>` | End / start of line |
 | `<C-s>` | Save |
 | `<C-z>` | Undo |
-| `<C-;>` / `<C-,>` | `;` / `,` at end of line |
 | `<C-BS>` | Delete word backward |
 | `<C-Del>` | Delete word forward |
 | `,` `.` `;` | Insert character and split undo |
@@ -313,7 +312,6 @@ Plugin defaults `gcc` / `gc` (linewise) and `gbc` / `gb` (block) still work.
 | `*` / `#` | n | Search word, centered |
 | `*` | v | Search selection, stay |
 | `//` | v | Search for selection |
-| `<Esc>` | n | Clear search highlight |
 | `<leader>rw` | n | Substitute word under cursor |
 | `gh` / `gl` | n/v | First non-blank / end of line |
 | `g}` / `g{` | n/v | Next / previous paragraph |
